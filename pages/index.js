@@ -3,14 +3,12 @@ import Image from "next/image";
 import {
   BarChart,
   Bar,
-  Cell,
   XAxis,
-  YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
+import OverviewChart from "../components/overview-chart";
+import SummaryItem from "../components/summary-item";
 
 const AUTH =
   "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiIwX3QuamVyYWJla0BnbWFpbC5jb21fMiIsInNjb3BlIjpbImFsbCJdLCJkZXRhaWwiOnsib3JnYW5pemF0aW9uSWQiOjAsInRvcEdyb3VwSWQiOm51bGwsImdyb3VwSWQiOm51bGwsInJvbGVJZCI6LTEsInVzZXJJZCI6Nzc1Mjg5LCJ2ZXJzaW9uIjoxLCJpZGVudGlmaWVyIjoidC5qZXJhYmVrQGdtYWlsLmNvbSIsImlkZW50aXR5VHlwZSI6MiwiYXBwSWQiOm51bGx9LCJleHAiOjE2Nzg0ODAwNTgsImF1dGhvcml0aWVzIjpbImFsbCJdLCJqdGkiOiI3M2JlMWQ2Yy0wNDVlLTQ2MTktOWEwNC0zOGE0YWRhNTQ0OTYiLCJjbGllbnRfaWQiOiJ0ZXN0In0.dxkLByPOUW1h_cX2xDUPXJyKoe_PIv0tEUWMRaSyWCiWSFLQdCHVIqmm8wiMf6gBgBajCzFaUSag42Y2cNBIQWNNHY3LABFLlP_vWEDvVgrR7Ci-WLVnJt6TWdpDujzhhSZtdeOLhoXdJcMEoDYH2r9k1n5mOwOqeAmCRp0yMC7A1Af8xQXWSkgm7ano-GSKJaRg5ZlDTbz2Bq0XTqlZoqo01y58BAdgvSD6wjLm2AnD82emaTosd6z--CK3U6Dp-lseIe7TG_Z_Y64lX3xW8AgQl5AjWVNeqwUqa22PImipLpuNr9u6SFbLmsz5Bk_Mj1QodIWnmrkhHO4B9xBOhA";
@@ -70,7 +68,19 @@ async function fetchChart(year, month) {
     .then((result) => result?.records);
 }
 
-const Home = ({ data, chart, reverseChart, error }) => {
+async function fetchYear(year) {
+  return fetch(
+    `https://home.solarmanpv.com/maintain-s/history/batteryPower/3084557/stats/year?year=${year}`,
+    {
+      method: "GET",
+      headers,
+    }
+  )
+    .then(parseJSON)
+    .then((result) => result?.records);
+}
+
+const Home = ({ data, chart, reverseChart, year, error }) => {
   return (
     <div className="dark:bg-black">
       <Head>
@@ -84,118 +94,20 @@ const Home = ({ data, chart, reverseChart, error }) => {
       </Head>
 
       <main>
-        <div className="grid grid-cols-[auto_1fr_auto] grid-rows-2 p-6 md:p-10 max-w-[375px]">
-          <div>
-            <div className="flex items-center">
-              <div>
-                <Image
-                  src="sun-dark.svg"
-                  width={24}
-                  height={24}
-                  className={[
-                    data?.generationPower > 0 ? "" : "opacity-20",
-                    "dark:hidden",
-                  ].join(" ")}
-                />
-                <Image
-                  src="sun-light.svg"
-                  width={24}
-                  height={24}
-                  className={[
-                    data?.generationPower > 0 ? "" : "opacity-20",
-                    "hidden dark:block",
-                  ].join(" ")}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row-span-2 py-3 px-4">
-            <svg
-              viewBox="0 0 194 73"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-            >
-              <path
-                d="M1 1H192"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                className={[
-                  data?.generationPower > 0 ? "" : "opacity-20",
-                  "stroke-black dark:stroke-white",
-                ].join(" ")}
-              />
-              <path
-                d="M1 71H58.5C64.0228 71 68.5 66.5228 68.5 61V11C68.5 5.47715 72.9772 1 78.5 1H192"
-                stroke="black"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                className={[
-                  data?.buyPower < 0 ? "" : "opacity-20",
-                  "stroke-black dark:stroke-white",
-                ].join(" ")}
-              />
-            </svg>
-          </div>
-          <div className="space-y-2 flex-row items-center">
-            <div>
-              <Image
-                src="house-dark.svg"
-                width={24}
-                height={24}
-                className="dark:hidden"
-              />
-              <Image
-                src="house-light.svg"
-                width={24}
-                height={24}
-                className="dark:block hidden"
-              />
-            </div>
-          </div>
-          <div className="flex items-end">
-            <div className="flex items-center">
-              <div>
-                <Image
-                  src="power-plant-dark.svg"
-                  width={24}
-                  height={24}
-                  className={[
-                    data?.buyPower < 0 ? "" : "opacity-20",
-                    "dark:hidden",
-                  ].join(" ")}
-                />
-                <Image
-                  src="power-plant-light.svg"
-                  width={24}
-                  height={24}
-                  className={[
-                    data?.buyPower < 0 ? "" : "opacity-20",
-                    "dark:block hidden",
-                  ].join(" ")}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <OverviewChart
+          generationPower={data?.generationPower}
+          buyPower={data?.buyPower}
+        />
         <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
-          <div>
-            <div className="text-xl dark:text-white">
-              {data?.usePower.toLocaleString()} W
-            </div>
-            <div className="text-gray-500">Spotřeba</div>
-          </div>
-          <div>
-            <div className="text-xl dark:text-white">
-              {data?.generationPower.toLocaleString()} W
-            </div>
-            <div className="text-gray-500">Výroba</div>
-          </div>
-          <div>
-            <div className="text-xl dark:text-white">
-              {(-data?.buyPower).toLocaleString()} W
-            </div>
-            <div className="text-gray-500">Síť</div>
-          </div>
+          <SummaryItem title="Spotřeba">
+            {data?.usePower.toLocaleString()} W
+          </SummaryItem>
+          <SummaryItem title="Výroba">
+            {data?.generationPower.toLocaleString()} W
+          </SummaryItem>
+          <SummaryItem title="Síť">
+            {Math.abs(data?.buyPower * -1).toLocaleString()} W
+          </SummaryItem>
           <div>
             <div className="flex space-x-2">
               <div className="text-xl dark:text-white">
@@ -213,25 +125,15 @@ const Home = ({ data, chart, reverseChart, error }) => {
             </div>
             <div className="text-gray-500">Baterie</div>
           </div>
-          <div>
-            <div className="text-xl dark:text-white">
-              {data?.generationValue.toLocaleString()} kWh
-            </div>
-            <div className="text-gray-500">Dnes vyrobeno</div>
-          </div>
-          <div>
-            <div className="text-xl dark:text-white">
-              {(data?.generationValue / 0.2).toLocaleString()} km
-            </div>
-            <div className="text-gray-500">Dnes vyrobeno dojezd</div>
-          </div>
-          <div>
-            <div className="text-xl dark:text-white">
-              {(data?.generationValue / (78 / 100)).toFixed(1).toLocaleString()}{" "}
-              %
-            </div>
-            <div className="text-gray-500">Dnes baterie auta</div>
-          </div>
+          <SummaryItem title="Dnes vyrobeno">
+            {data?.generationValue.toLocaleString()} kWh
+          </SummaryItem>
+          <SummaryItem title="Dnes vyrobeno dojezd">
+            {(data?.generationValue / 0.2).toLocaleString()} km
+          </SummaryItem>
+          <SummaryItem title="Dnes baterie auta">
+            {(data?.generationValue / (78 / 100)).toFixed(1).toLocaleString()} %
+          </SummaryItem>
           <div>
             <div className="text-xl dark:text-white">
               {(data?.generationTotal / 0.2).toFixed(0).toLocaleString()} km
@@ -273,6 +175,48 @@ const Home = ({ data, chart, reverseChart, error }) => {
               />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+
+        <div className="p-6 md:p-10 dark:text-white">
+          <div className="hidden md:grid md:grid-cols-5">
+            <div className="">Měsíc</div>
+            <div className="text-right">Výroba</div>
+            <div className="text-right">Spotřeba</div>
+            <div className="text-right">Nákup</div>
+            <div></div>
+          </div>
+          {year.map((item, key) => (
+            <div
+              key={key}
+              className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
+            >
+              <div className="font-semibold">
+                {new Intl.DateTimeFormat("cs-CZ", { month: "long" }).format(
+                  new Date(item.year, item.month, item.day)
+                )}
+              </div>
+              <div className="grid grid-cols-2 md:block">
+                <div className="md:hidden">Výroba</div>
+                <div className="text-right">
+                  {item.generationValue.toFixed(1)} kWh
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:block">
+                <div className="md:hidden">Spotřeba</div>
+                <div className="text-right">{item.useValue.toFixed(1)} kWh</div>
+              </div>
+              <div className="grid grid-cols-2 md:block">
+                <div className="md:hidden">Nákup</div>
+                <div className="text-right">{item.buyValue.toFixed(1)} kWh</div>
+              </div>
+              <div className="grid grid-cols-2 md:block">
+                <div className="md:hidden">Procenta</div>
+                <div className="text-right">
+                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="p-6 md:p-10 dark:text-white">
@@ -323,16 +267,17 @@ const Home = ({ data, chart, reverseChart, error }) => {
 
 Home.getInitialProps = async () => {
   try {
-    const [data, chart1, chart2] = await Promise.all([
+    const [data, chart1, chart2, year] = await Promise.all([
       fetchOverview(),
       fetchChart(2023, 1),
       fetchChart(2023, 2),
+      fetchYear(2023),
     ]);
 
     const chart = chart1.concat(chart2).reverse().slice(0, 31);
     const reverseChart = chart.slice().reverse();
 
-    return { data, chart, reverseChart };
+    return { data, chart, reverseChart, year };
   } catch (error) {
     return { error };
   }
