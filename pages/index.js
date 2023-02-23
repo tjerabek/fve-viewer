@@ -1,11 +1,12 @@
 import Head from "next/head";
-import Image from "next/image";
 import {
   BarChart,
+  LineChart,
   Bar,
   XAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Line,
 } from "recharts";
 import OverviewChart from "../components/overview-chart";
 import SummaryItem from "../components/summary-item";
@@ -150,6 +151,7 @@ const Home = ({ data, chart, reverseChart, year, error }) => {
           </div>
         </div>
 
+        <div className="p-6 md:p-10 font-semibold dark:text-white">Výroba</div>
         <div className="h-[200px] dark:hidden">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart width={500} height={200} data={reverseChart}>
@@ -174,6 +176,25 @@ const Home = ({ data, chart, reverseChart, year, error }) => {
                 isAnimationActive={false}
               />
             </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="p-6 md:p-10 font-semibold dark:text-white">Nákup</div>
+        <div className="h-[200px] dark:hidden">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart width={500} height={200} data={reverseChart}>
+              <XAxis dataKey="name" />
+              <CartesianGrid vertical={false} />
+              <Line type="monotone" dataKey="buyValue" stroke="#2B2A2B" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="h-[200px] hidden dark:block">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart width={500} height={200} data={reverseChart}>
+              <XAxis dataKey="name" />
+              <CartesianGrid vertical={false} stroke="#353d4e" />
+              <Line type="monotone" dataKey="buyValue" stroke="#6b7280" />
+            </LineChart>
           </ResponsiveContainer>
         </div>
 
