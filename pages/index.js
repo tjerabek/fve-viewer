@@ -81,7 +81,23 @@ async function fetchYear(year) {
     .then((result) => result?.records);
 }
 
-const Home = ({ data, chart, reverseChart, year, error }) => {
+async function fetchForecast() {
+  const url = "https://api.forecast.solar/estimate/50.063212/15.675951/40/0/6.25";
+  return fetch(
+    url,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 1 * 60 * 60 },
+    }
+  )
+    .then(parseJSON)
+    .then((result) => Object.values(result?.result?.watt_hours_day || []));
+}
+
+const Home = ({ data, chart, reverseChart, year, forecast, error }) => {
   return (
     <>
       <div className="dark:bg-black">
@@ -126,9 +142,17 @@ const Home = ({ data, chart, reverseChart, year, error }) => {
               </div>
               <div className="text-gray-500">Baterie</div>
             </div>
-            <SummaryItem title="Dnes vyrobeno">
-              {data?.generationValue.toLocaleString()} kWh
-            </SummaryItem>
+            <div className="space-y-2">
+              <SummaryItem title="Dnes vyrobeno">
+                {data?.generationValue.toLocaleString()} kWh
+              </SummaryItem>
+              {(forecast && forecast.length === 2) && (
+                <div>
+                  <div className="text-gray-500">Předpověď dnes: {(forecast[0] / 1000).toFixed(1)} kWh</div>
+                  <div className="text-gray-500">Předpověď zítra: {(forecast[1] / 1000).toFixed(1)} kWh</div>
+                </div>
+              )}
+            </div>
             <SummaryItem title="Dnes vyrobeno dojezd">
               {(data?.generationValue / 0.2).toLocaleString()} km
             </SummaryItem>
@@ -302,18 +326,20 @@ const Home = ({ data, chart, reverseChart, year, error }) => {
 
 Home.getInitialProps = async () => {
   try {
-    const [data, chart1, chart2, year] = await Promise.all([
+    const [data, chart1, chart2, year, forecast] = await Promise.all([
       fetchOverview(),
       fetchChart(2023, 1),
       fetchChart(2023, 2),
       fetchYear(2023),
+      fetchForecast(),
     ]);
 
     const chart = chart1.concat(chart2).reverse().slice(0, 31);
     const reverseChart = chart.slice().reverse();
 
-    return { data, chart, reverseChart, year };
+    return { data, chart, reverseChart, year, forecast };
   } catch (error) {
+    console.log({ error });
     return { error };
   }
 };
