@@ -1,4 +1,7 @@
 import Image from "next/image";
+import IconHouse from "./icon-house";
+import IconPowerplant from "./icon-powerplant";
+import IconSun from "./icon-sun";
 
 export default function OverviewChart({ generationPower, buyPower }) {
   return (
@@ -6,26 +9,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
       <div>
         <div className="flex items-center">
           <div>
-            <Image
-              src="sun-dark.svg"
-              width={24}
-              height={24}
-              alt="Slunce"
-              className={[
-                generationPower > 0 ? "" : "opacity-20",
-                "dark:hidden",
-              ].join(" ")}
-            />
-            <Image
-              src="sun-light.svg"
-              width={24}
-              height={24}
-              alt="Slunce"
-              className={[
-                generationPower > 0 ? "" : "opacity-20",
-                "hidden dark:block",
-              ].join(" ")}
-            />
+            <IconSun className={generationPower > 0 ? "" : "opacity-20"} />
           </div>
         </div>
       </div>
@@ -60,45 +44,13 @@ export default function OverviewChart({ generationPower, buyPower }) {
       </div>
       <div className="space-y-2 flex-row items-center">
         <div>
-          <Image
-            src="house-dark.svg"
-            width={24}
-            height={24}
-            alt="Spotřeba"
-            className="dark:hidden"
-          />
-          <Image
-            src="house-light.svg"
-            width={24}
-            height={24}
-            alt="Spotřeba"
-            className="dark:block hidden"
-          />
+          <IconHouse />
         </div>
       </div>
       <div className="flex items-end">
         <div className="flex items-center">
           <div>
-            <Image
-              src="power-plant-dark.svg"
-              width={24}
-              height={24}
-              alt="Síť"
-              className={[
-                buyPower < 0 ? "" : "opacity-20",
-                "dark:hidden",
-              ].join(" ")}
-            />
-            <Image
-              src="power-plant-light.svg"
-              width={24}
-              height={24}
-              alt="Síť"
-              className={[
-                buyPower < 0 ? "" : "opacity-20",
-                "dark:block hidden",
-              ].join(" ")}
-            />
+            <IconPowerplant className={buyPower < 0 ? "" : "opacity-20"} />
           </div>
         </div>
       </div>
