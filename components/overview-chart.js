@@ -10,6 +10,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
               src="sun-dark.svg"
               width={24}
               height={24}
+              alt="Slunce"
               className={[
                 generationPower > 0 ? "" : "opacity-20",
                 "dark:hidden",
@@ -19,6 +20,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
               src="sun-light.svg"
               width={24}
               height={24}
+              alt="Slunce"
               className={[
                 generationPower > 0 ? "" : "opacity-20",
                 "hidden dark:block",
@@ -35,8 +37,9 @@ export default function OverviewChart({ generationPower, buyPower }) {
         >
           <path
             d="M1 1H192"
-            stroke-width="1.5"
-            stroke-linecap="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            alt="Síť"
             className={[
               generationPower > 0 ? "" : "opacity-20",
               "stroke-black dark:stroke-white",
@@ -45,8 +48,9 @@ export default function OverviewChart({ generationPower, buyPower }) {
           <path
             d="M1 71H58.5C64.0228 71 68.5 66.5228 68.5 61V11C68.5 5.47715 72.9772 1 78.5 1H192"
             stroke="black"
-            stroke-width="1.5"
-            stroke-linecap="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            alt="Síť"
             className={[
               buyPower < 0 ? "" : "opacity-20",
               "stroke-black dark:stroke-white",
@@ -60,12 +64,14 @@ export default function OverviewChart({ generationPower, buyPower }) {
             src="house-dark.svg"
             width={24}
             height={24}
+            alt="Spotřeba"
             className="dark:hidden"
           />
           <Image
             src="house-light.svg"
             width={24}
             height={24}
+            alt="Spotřeba"
             className="dark:block hidden"
           />
         </div>
@@ -77,6 +83,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
               src="power-plant-dark.svg"
               width={24}
               height={24}
+              alt="Síť"
               className={[
                 buyPower < 0 ? "" : "opacity-20",
                 "dark:hidden",
@@ -86,6 +93,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
               src="power-plant-light.svg"
               width={24}
               height={24}
+              alt="Síť"
               className={[
                 buyPower < 0 ? "" : "opacity-20",
                 "dark:block hidden",

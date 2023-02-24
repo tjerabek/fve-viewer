@@ -83,206 +83,220 @@ async function fetchYear(year) {
 
 const Home = ({ data, chart, reverseChart, year, error }) => {
   return (
-    <div className="dark:bg-black">
-      <Head>
-        <title>FVE</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="white" />
-        <meta name="apple-mobile-web-app-title" content="Notentool" />
-        <script src="https://cdn.tailwindcss.com"></script>
-      </Head>
+    <>
+      <div className="dark:bg-black">
+        <Head>
+          <title>FVE</title>
+          <link rel="icon" href="/favicon.ico" />
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="white" />
+          <meta name="apple-mobile-web-app-title" content="Notentool" />
+        </Head>
 
-      <main>
-        <OverviewChart
-          generationPower={data?.generationPower}
-          buyPower={data?.buyPower}
-        />
-        <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
-          <SummaryItem title="Spotřeba">
-            {data?.usePower.toLocaleString()} W
-          </SummaryItem>
-          <SummaryItem title="Výroba">
-            {data?.generationPower.toLocaleString()} W
-          </SummaryItem>
-          <SummaryItem title="Síť">
-            {Math.abs(data?.buyPower * -1).toLocaleString()} W
-          </SummaryItem>
-          <div>
-            <div className="flex space-x-2">
+        <main>
+          <OverviewChart
+            generationPower={data?.generationPower}
+            buyPower={data?.buyPower}
+          />
+          <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
+            <SummaryItem title="Spotřeba">
+              {data?.usePower.toLocaleString()} W
+            </SummaryItem>
+            <SummaryItem title="Výroba">
+              {data?.generationPower.toLocaleString()} W
+            </SummaryItem>
+            <SummaryItem title="Síť">
+              {Math.abs(data?.buyPower * -1).toLocaleString()} W
+            </SummaryItem>
+            <div>
+              <div className="flex space-x-2">
+                <div className="text-xl dark:text-white">
+                  {data?.batterySoc.toLocaleString()} %
+                </div>
+                <div className="flex items-center space-x-px">
+                  <div className="border border-gray-500 w-[21px] h-[12px] rounded p-px">
+                    <div
+                      className="h-full bg-gray-800 dark:bg-gray-100 rounded-sm"
+                      style={{ width: `${data?.batterySoc}%` }}
+                    ></div>
+                  </div>
+                  <div className="bg-gray-500 w-[2px] h-[6px] rounded-r-sm"></div>
+                </div>
+              </div>
+              <div className="text-gray-500">Baterie</div>
+            </div>
+            <SummaryItem title="Dnes vyrobeno">
+              {data?.generationValue.toLocaleString()} kWh
+            </SummaryItem>
+            <SummaryItem title="Dnes vyrobeno dojezd">
+              {(data?.generationValue / 0.2).toLocaleString()} km
+            </SummaryItem>
+            <SummaryItem title="Dnes baterie auta">
+              {(data?.generationValue / (78 / 100)).toFixed(1).toLocaleString()}{" "}
+              %
+            </SummaryItem>
+            <div>
               <div className="text-xl dark:text-white">
-                {data?.batterySoc.toLocaleString()} %
+                {(data?.generationTotal / 0.2).toFixed(0).toLocaleString()} km
               </div>
-              <div className="flex items-center space-x-px">
-                <div className="border border-gray-500 w-[21px] h-[12px] rounded p-px">
-                  <div
-                    className="h-full bg-gray-800 dark:bg-gray-100 rounded-sm"
-                    style={{ width: `${data?.batterySoc}%` }}
-                  ></div>
-                </div>
-                <div className="bg-gray-500 w-[2px] h-[6px] rounded-r-sm"></div>
+              <div className="text-gray-500">Celkem vyrobeno dojezd</div>
+              <div className="text-gray-500">
+                {(
+                  data?.generationTotal /
+                  0.2 /
+                  datediff(new Date(2023, 0, 9), new Date())
+                ).toFixed(1)}{" "}
+                km/den
               </div>
-            </div>
-            <div className="text-gray-500">Baterie</div>
-          </div>
-          <SummaryItem title="Dnes vyrobeno">
-            {data?.generationValue.toLocaleString()} kWh
-          </SummaryItem>
-          <SummaryItem title="Dnes vyrobeno dojezd">
-            {(data?.generationValue / 0.2).toLocaleString()} km
-          </SummaryItem>
-          <SummaryItem title="Dnes baterie auta">
-            {(data?.generationValue / (78 / 100)).toFixed(1).toLocaleString()} %
-          </SummaryItem>
-          <div>
-            <div className="text-xl dark:text-white">
-              {(data?.generationTotal / 0.2).toFixed(0).toLocaleString()} km
-            </div>
-            <div className="text-gray-500">Celkem vyrobeno dojezd</div>
-            <div className="text-gray-500">
-              {(
-                data?.generationTotal /
-                0.2 /
-                datediff(new Date(2023, 0, 9), new Date())
-              ).toFixed(1)}{" "}
-              km/den
             </div>
           </div>
-        </div>
 
-        <div className="p-6 md:p-10 font-semibold dark:text-white">Výroba</div>
-        <div className="h-[200px] dark:hidden">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart width={500} height={200} data={reverseChart}>
-              <XAxis dataKey="name" />
-              <CartesianGrid vertical={false} />
-              <Bar
-                dataKey="generationValue"
-                fill="#2B2A2B"
-                isAnimationActive={false}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="h-[200px] hidden dark:block">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart width={500} height={200} data={reverseChart}>
-              <XAxis dataKey="name" />
-              <CartesianGrid vertical={false} stroke="#353d4e" />
-              <Bar
-                dataKey="generationValue"
-                fill="#6b7280"
-                isAnimationActive={false}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="p-6 md:p-10 font-semibold dark:text-white">Nákup</div>
-        <div className="h-[200px] dark:hidden">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart width={500} height={200} data={reverseChart}>
-              <XAxis dataKey="name" />
-              <CartesianGrid vertical={false} />
-              <Line type="monotone" dataKey="buyValue" stroke="#2B2A2B" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="h-[200px] hidden dark:block">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart width={500} height={200} data={reverseChart}>
-              <XAxis dataKey="name" />
-              <CartesianGrid vertical={false} stroke="#353d4e" />
-              <Line type="monotone" dataKey="buyValue" stroke="#6b7280" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="p-6 md:p-10 dark:text-white">
-          <div className="hidden md:grid md:grid-cols-5">
-            <div className="">Měsíc</div>
-            <div className="text-right">Výroba</div>
-            <div className="text-right">Spotřeba</div>
-            <div className="text-right">Nákup</div>
-            <div></div>
+          <div className="p-6 md:p-10 font-semibold dark:text-white">
+            Výroba
           </div>
-          {year.map((item, key) => (
-            <div
-              key={key}
-              className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
-            >
-              <div className="font-semibold">
-                {new Intl.DateTimeFormat("cs-CZ", { month: "long" }).format(
-                  new Date(item.year, item.month, item.day)
-                )}
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Výroba</div>
-                <div className="text-right">
-                  {item.generationValue.toFixed(1)} kWh
-                </div>
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Spotřeba</div>
-                <div className="text-right">{item.useValue.toFixed(1)} kWh</div>
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Nákup</div>
-                <div className="text-right">{item.buyValue.toFixed(1)} kWh</div>
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Procenta</div>
-                <div className="text-right">
-                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="p-6 md:p-10 dark:text-white">
-          <div className="hidden md:grid md:grid-cols-5">
-            <div className="">Datum</div>
-            <div className="text-right">Výroba</div>
-            <div className="text-right">Spotřeba</div>
-            <div className="text-right">Nákup</div>
-            <div></div>
+          <div className="h-[200px] dark:hidden">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart width={500} height={200} data={reverseChart}>
+                <XAxis dataKey="name" />
+                <CartesianGrid vertical={false} />
+                <Bar
+                  dataKey="generationValue"
+                  fill="#2B2A2B"
+                  isAnimationActive={false}
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-          {chart.map((item, key) => (
-            <div
-              key={key}
-              className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
-            >
-              <div className="font-semibold">
-                {item.day}.{item.month}.{item.year}
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Výroba</div>
-                <div className="text-right">
-                  {item.generationValue.toFixed(1)} kWh
-                </div>
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Spotřeba</div>
-                <div className="text-right">{item.useValue.toFixed(1)} kWh</div>
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Nákup</div>
-                <div className="text-right">{item.buyValue.toFixed(1)} kWh</div>
-              </div>
-              <div className="grid grid-cols-2 md:block">
-                <div className="md:hidden">Procenta</div>
-                <div className="text-right">
-                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
+          <div className="h-[200px] hidden dark:block">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart width={500} height={200} data={reverseChart}>
+                <XAxis dataKey="name" />
+                <CartesianGrid vertical={false} stroke="#353d4e" />
+                <Bar
+                  dataKey="generationValue"
+                  fill="#6b7280"
+                  isAnimationActive={false}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="p-6 md:p-10 font-semibold dark:text-white">Nákup</div>
+          <div className="h-[200px] dark:hidden">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart width={500} height={200} data={reverseChart}>
+                <XAxis dataKey="name" />
+                <CartesianGrid vertical={false} />
+                <Line type="monotone" dataKey="buyValue" stroke="#2B2A2B" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="h-[200px] hidden dark:block">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart width={500} height={200} data={reverseChart}>
+                <XAxis dataKey="name" />
+                <CartesianGrid vertical={false} stroke="#353d4e" />
+                <Line type="monotone" dataKey="buyValue" stroke="#6b7280" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
 
-      <footer>{error}</footer>
-    </div>
+          <div className="p-6 md:p-10 dark:text-white">
+            <div className="hidden md:grid md:grid-cols-5">
+              <div className="">Měsíc</div>
+              <div className="text-right">Výroba</div>
+              <div className="text-right">Spotřeba</div>
+              <div className="text-right">Nákup</div>
+              <div></div>
+            </div>
+            {year?.map((item, key) => (
+              <div
+                key={key}
+                className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
+              >
+                <div className="font-semibold">
+                  {new Intl.DateTimeFormat("cs-CZ", { month: "long" }).format(
+                    new Date(item.year, item.month, item.day)
+                  )}
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Výroba</div>
+                  <div className="text-right">
+                    {item.generationValue.toFixed(1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Spotřeba</div>
+                  <div className="text-right">
+                    {item.useValue.toFixed(1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Nákup</div>
+                  <div className="text-right">
+                    {item.buyValue.toFixed(1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Procenta</div>
+                  <div className="text-right">
+                    {(item.generationValue / (item.useValue / 100)).toFixed(1)}{" "}
+                    %
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-6 md:p-10 dark:text-white">
+            <div className="hidden md:grid md:grid-cols-5">
+              <div className="">Datum</div>
+              <div className="text-right">Výroba</div>
+              <div className="text-right">Spotřeba</div>
+              <div className="text-right">Nákup</div>
+              <div></div>
+            </div>
+            {chart?.map((item, key) => (
+              <div
+                key={key}
+                className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
+              >
+                <div className="font-semibold">
+                  {item.day}.{item.month}.{item.year}
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Výroba</div>
+                  <div className="text-right">
+                    {item.generationValue.toFixed(1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Spotřeba</div>
+                  <div className="text-right">
+                    {item.useValue.toFixed(1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Nákup</div>
+                  <div className="text-right">
+                    {item.buyValue.toFixed(1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:block">
+                  <div className="md:hidden">Procenta</div>
+                  <div className="text-right">
+                    {(item.generationValue / (item.useValue / 100)).toFixed(1)}{" "}
+                    %
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+
+        <footer>{error}</footer>
+      </div>
+    </>
   );
 };
 
