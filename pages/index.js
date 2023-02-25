@@ -1,15 +1,12 @@
 import Head from "next/head";
-import {
-  BarChart,
-  LineChart,
-  Bar,
-  XAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Line,
-} from "recharts";
+import BuyChart from "../components/buy-chart";
+import GenerationChart from "../components/generation-chart";
+import IconBattery from "../components/icon-battery";
 import OverviewChart from "../components/overview-chart";
 import SummaryItem from "../components/summary-item";
+import TableHeader from "../components/table-header";
+import TableItem from "../components/table-item";
+import Title from "../components/title";
 
 const AUTH =
   "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiIwX3QuamVyYWJla0BnbWFpbC5jb21fMiIsInNjb3BlIjpbImFsbCJdLCJkZXRhaWwiOnsib3JnYW5pemF0aW9uSWQiOjAsInRvcEdyb3VwSWQiOm51bGwsImdyb3VwSWQiOm51bGwsInJvbGVJZCI6LTEsInVzZXJJZCI6Nzc1Mjg5LCJ2ZXJzaW9uIjoxLCJpZGVudGlmaWVyIjoidC5qZXJhYmVrQGdtYWlsLmNvbSIsImlkZW50aXR5VHlwZSI6MiwiYXBwSWQiOm51bGx9LCJleHAiOjE2Nzg0ODAwNTgsImF1dGhvcml0aWVzIjpbImFsbCJdLCJqdGkiOiI3M2JlMWQ2Yy0wNDVlLTQ2MTktOWEwNC0zOGE0YWRhNTQ0OTYiLCJjbGllbnRfaWQiOiJ0ZXN0In0.dxkLByPOUW1h_cX2xDUPXJyKoe_PIv0tEUWMRaSyWCiWSFLQdCHVIqmm8wiMf6gBgBajCzFaUSag42Y2cNBIQWNNHY3LABFLlP_vWEDvVgrR7Ci-WLVnJt6TWdpDujzhhSZtdeOLhoXdJcMEoDYH2r9k1n5mOwOqeAmCRp0yMC7A1Af8xQXWSkgm7ano-GSKJaRg5ZlDTbz2Bq0XTqlZoqo01y58BAdgvSD6wjLm2AnD82emaTosd6z--CK3U6Dp-lseIe7TG_Z_Y64lX3xW8AgQl5AjWVNeqwUqa22PImipLpuNr9u6SFbLmsz5Bk_Mj1QodIWnmrkhHO4B9xBOhA";
@@ -82,17 +79,15 @@ async function fetchYear(year) {
 }
 
 async function fetchForecast() {
-  const url = "https://api.forecast.solar/estimate/50.063212/15.675951/40/0/6.25";
-  return fetch(
-    url,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      next: { revalidate: 1 * 60 * 60 },
-    }
-  )
+  const url =
+    "https://api.forecast.solar/estimate/50.063212/15.675951/40/0/6.25";
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    next: { revalidate: 1 * 60 * 60 },
+  })
     .then(parseJSON)
     .then((result) => Object.values(result?.result?.watt_hours_day || []));
 }
@@ -101,15 +96,6 @@ const Home = ({ data, chart, reverseChart, year, forecast, error }) => {
   return (
     <>
       <div className="dark:bg-black">
-        <Head>
-          <title>FVE</title>
-          <link rel="icon" href="/favicon.ico" />
-          <link rel="manifest" href="/manifest.json" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta name="apple-mobile-web-app-status-bar-style" content="white" />
-          <meta name="apple-mobile-web-app-title" content="Notentool" />
-        </Head>
-
         <main>
           <OverviewChart
             generationPower={data?.generationPower}
@@ -130,15 +116,7 @@ const Home = ({ data, chart, reverseChart, year, forecast, error }) => {
                 <div className="text-xl dark:text-white">
                   {data?.batterySoc.toLocaleString()} %
                 </div>
-                <div className="flex items-center space-x-px">
-                  <div className="border border-gray-500 w-[21px] h-[12px] rounded p-px">
-                    <div
-                      className="h-full bg-gray-800 dark:bg-gray-100 rounded-sm"
-                      style={{ width: `${data?.batterySoc}%` }}
-                    ></div>
-                  </div>
-                  <div className="bg-gray-500 w-[2px] h-[6px] rounded-r-sm"></div>
-                </div>
+                <IconBattery value={data?.batterySoc} />
               </div>
               <div className="text-gray-500">Baterie</div>
             </div>
@@ -146,10 +124,14 @@ const Home = ({ data, chart, reverseChart, year, forecast, error }) => {
               <SummaryItem title="Dnes vyrobeno">
                 {data?.generationValue.toLocaleString()} kWh
               </SummaryItem>
-              {(forecast && forecast.length === 2) && (
+              {forecast && forecast.length === 2 && (
                 <div>
-                  <div className="text-gray-500">Předpověď dnes: {(forecast[0] / 1000).toFixed(1)} kWh</div>
-                  <div className="text-gray-500">Předpověď zítra: {(forecast[1] / 1000).toFixed(1)} kWh</div>
+                  <div className="text-gray-500">
+                    Předpověď dnes: {(forecast[0] / 1000).toFixed(1)} kWh
+                  </div>
+                  <div className="text-gray-500">
+                    Předpověď zítra: {(forecast[1] / 1000).toFixed(1)} kWh
+                  </div>
                 </div>
               )}
             </div>
@@ -175,144 +157,55 @@ const Home = ({ data, chart, reverseChart, year, forecast, error }) => {
               </div>
             </div>
           </div>
-
-          <div className="p-6 md:p-10 font-semibold dark:text-white">
-            Výroba
-          </div>
-          <div className="h-[200px] dark:hidden">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart width={500} height={200} data={reverseChart}>
-                <XAxis dataKey="name" />
-                <CartesianGrid vertical={false} />
-                <Bar
-                  dataKey="generationValue"
-                  fill="#2B2A2B"
-                  isAnimationActive={false}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="h-[200px] hidden dark:block">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart width={500} height={200} data={reverseChart}>
-                <XAxis dataKey="name" />
-                <CartesianGrid vertical={false} stroke="#353d4e" />
-                <Bar
-                  dataKey="generationValue"
-                  fill="#6b7280"
-                  isAnimationActive={false}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="p-6 md:p-10 font-semibold dark:text-white">Nákup</div>
-          <div className="h-[200px] dark:hidden">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart width={500} height={200} data={reverseChart}>
-                <XAxis dataKey="name" />
-                <CartesianGrid vertical={false} />
-                <Line type="monotone" dataKey="buyValue" stroke="#2B2A2B" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="h-[200px] hidden dark:block">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart width={500} height={200} data={reverseChart}>
-                <XAxis dataKey="name" />
-                <CartesianGrid vertical={false} stroke="#353d4e" />
-                <Line type="monotone" dataKey="buyValue" stroke="#6b7280" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <Title>Výroba</Title>
+          <GenerationChart reverseChart={reverseChart} />
+          <Title>Nákup</Title>
+          <BuyChart reverseChart={reverseChart} />
 
           <div className="p-6 md:p-10 dark:text-white">
-            <div className="hidden md:grid md:grid-cols-5">
-              <div className="">Měsíc</div>
-              <div className="text-right">Výroba</div>
-              <div className="text-right">Spotřeba</div>
-              <div className="text-right">Nákup</div>
-              <div></div>
-            </div>
+            <TableHeader title="Měsíc" />
             {year?.map((item, key) => (
               <div
                 key={key}
-                className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
+                className="grid md:grid-cols-4 py-4 md:py-0 border-b dark:border-gray-800"
               >
                 <div className="font-semibold">
                   {new Intl.DateTimeFormat("cs-CZ", { month: "long" }).format(
                     new Date(item.year, item.month, item.day)
                   )}
                 </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Výroba</div>
-                  <div className="text-right">
-                    {item.generationValue.toFixed(1)} kWh
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Spotřeba</div>
-                  <div className="text-right">
-                    {item.useValue.toFixed(1)} kWh
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Nákup</div>
-                  <div className="text-right">
-                    {item.buyValue.toFixed(1)} kWh
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Procenta</div>
-                  <div className="text-right">
-                    {(item.generationValue / (item.useValue / 100)).toFixed(1)}{" "}
-                    %
-                  </div>
-                </div>
+                <TableItem title="Výroba">
+                  {item.generationValue.toFixed(1)} kWh
+                </TableItem>
+                <TableItem title="Nákup">
+                  {item.buyValue.toFixed(1)} kWh
+                </TableItem>
+                <TableItem title="Procenta">
+                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
+                </TableItem>
               </div>
             ))}
           </div>
 
           <div className="p-6 md:p-10 dark:text-white">
-            <div className="hidden md:grid md:grid-cols-5">
-              <div className="">Datum</div>
-              <div className="text-right">Výroba</div>
-              <div className="text-right">Spotřeba</div>
-              <div className="text-right">Nákup</div>
-              <div></div>
-            </div>
+            <TableHeader title="Datum" />
             {chart?.map((item, key) => (
               <div
                 key={key}
-                className="grid md:grid-cols-5 py-4 md:py-0 border-b dark:border-gray-800"
+                className="grid md:grid-cols-4 py-4 md:py-0 border-b dark:border-gray-800"
               >
                 <div className="font-semibold">
                   {item.day}.{item.month}.{item.year}
                 </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Výroba</div>
-                  <div className="text-right">
-                    {item.generationValue.toFixed(1)} kWh
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Spotřeba</div>
-                  <div className="text-right">
-                    {item.useValue.toFixed(1)} kWh
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Nákup</div>
-                  <div className="text-right">
-                    {item.buyValue.toFixed(1)} kWh
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 md:block">
-                  <div className="md:hidden">Procenta</div>
-                  <div className="text-right">
-                    {(item.generationValue / (item.useValue / 100)).toFixed(1)}{" "}
-                    %
-                  </div>
-                </div>
+                <TableItem title="Výroba">
+                  {item.generationValue.toFixed(1)} kWh
+                </TableItem>
+                <TableItem title="Nákup">
+                  {item.buyValue.toFixed(1)} kWh
+                </TableItem>
+                <TableItem title="Procenta">
+                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
+                </TableItem>
               </div>
             ))}
           </div>
