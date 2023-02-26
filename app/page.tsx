@@ -7,89 +7,14 @@ import TableHeader from "../components/table-header";
 import TableItem from "../components/table-item";
 import Title from "../components/title";
 import { datediff } from "../lib/datediff";
-import { filterKeys } from "../lib/filter-keys";
-import { parseJSON } from "../lib/parse-json";
+import { fetchForecast } from "../lib/forecast";
+import { fetchChart, fetchOverview, fetchYear } from "../lib/plant-data";
 
 const AUTH = `Bearer ${process.env.AUTH_TOKEN}`;
 const START_DATE = new Date(2023, 0, 9);
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
 
-type OverviewData = {
-  generationPower?: number;
-  usePower?: number;
-  buyPower?: number;
-  batterySoc?: number;
-  generationValue?: number;
-  generationTotal?: number;
-};
-
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: AUTH,
-};
-
-async function fetchOverview(): Promise<OverviewData> {
-  const filteredKeys = [
-    "generationPower",
-    "usePower",
-    "buyPower",
-    "batterySoc",
-    "generationValue",
-    "generationTotal",
-  ];
-
-  return fetch(
-    "https://home.solarmanpv.com/maintain-s/operating/station/information/3084557?language=cs",
-    {
-      method: "GET",
-      headers,
-    }
-  )
-    .then(parseJSON)
-    .then((result) => filterKeys(result, filteredKeys))
-    .then((result) => ({
-      ...result,
-    }));
-}
-
-async function fetchChart(year, month) {
-  return fetch(
-    `https://home.solarmanpv.com/maintain-s/history/batteryPower/3084557/stats/month?year=${year}&month=${month}`,
-    {
-      method: "GET",
-      headers,
-    }
-  )
-    .then(parseJSON)
-    .then((result) => result?.records);
-}
-
-async function fetchYear(year) {
-  return fetch(
-    `https://home.solarmanpv.com/maintain-s/history/batteryPower/3084557/stats/year?year=${year}`,
-    {
-      method: "GET",
-      headers,
-    }
-  )
-    .then(parseJSON)
-    .then((result) => result?.records);
-}
-
-async function fetchForecast(): Promise<Array<number>> {
-  const url =
-    "https://api.forecast.solar/estimate/50.063212/15.675951/40/0/6.25";
-  return fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    next: { revalidate: 1 * 60 * 60 },
-  })
-    .then(parseJSON)
-    .then((result) => Object.values(result?.result?.watt_hours_day || []));
-}
 
 export default async function Page() {
   try {
@@ -120,7 +45,7 @@ export default async function Page() {
                 {data?.generationPower?.toLocaleString()} W
               </SummaryItem>
               <SummaryItem title="Síť">
-                {Math.abs(data?.buyPower || 0 * -1).toLocaleString()} W
+                {Math.abs((data?.buyPower || 0) * -1).toLocaleString()} W
               </SummaryItem>
               <div>
                 <div className="flex space-x-2">
