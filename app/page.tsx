@@ -15,6 +15,10 @@ const START_DATE = new Date(2023, 0, 9);
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default async function Page() {
   const [data, chart1, chart2, year, forecast] = await Promise.all([
     fetchOverview(),
