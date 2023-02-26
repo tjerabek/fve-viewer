@@ -1,4 +1,5 @@
-import Image from "next/image";
+'use client';
+
 import IconHouse from "./icon-house";
 import IconPowerplant from "./icon-powerplant";
 import IconSun from "./icon-sun";

@@ -1,3 +1,5 @@
+'use client';
+
 export default function IconBattery({ value }) {
   return (
     <div className="flex items-center space-x-px">

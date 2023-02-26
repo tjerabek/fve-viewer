@@ -1,3 +1,5 @@
+'use client';
+
 export default function TableHeader({ title }) {
   return (
     <div className="hidden md:grid md:grid-cols-4">

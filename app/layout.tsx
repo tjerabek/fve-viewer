@@ -1,19 +1,23 @@
-import type { AppProps } from "next/app";
-import Head from "next/head";
 import "../styles/globals.css";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function RootLayout({
+  // Layouts must accept a children prop.
+  // This will be populated with nested layouts or pages
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <>
-      <Head>
+    <html lang="cs">
+      <head>
         <title>FVE</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="white" />
         <meta name="apple-mobile-web-app-title" content="Notentool" />
-      </Head>
-      <Component {...pageProps} />
-    </>
+      </head>
+      <body className="dark:bg-black">{children}</body>
+    </html>
   );
 }

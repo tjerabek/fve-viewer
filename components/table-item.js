@@ -1,3 +1,5 @@
+'use client';
+
 export default function TableItem({ title, children }) {
   return (
     <div className="grid grid-cols-2 md:block">

@@ -1,3 +1,5 @@
+'use client';
+
 export default function SummaryItem({ children, title }) {
   return (
     <div>
