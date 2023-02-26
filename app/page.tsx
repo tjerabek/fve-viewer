@@ -148,19 +148,19 @@ export default async function Page() {
               </div>
               <SummaryItem title="Dnes vyrobeno dojezd">
                 {(
-                  data?.generationValue || 0 / CAR_CONSUMPTION
+                  (data?.generationValue || 0) / CAR_CONSUMPTION
                 ).toLocaleString()}{" "}
                 km
               </SummaryItem>
               <SummaryItem title="Dnes baterie auta">
-                {(data?.generationValue || 0 / (CAR_BATTERY_SIZE / 100))
+                {((data?.generationValue || 0) / (CAR_BATTERY_SIZE / 100))
                   .toFixed(1)
                   .toLocaleString()}{" "}
                 %
               </SummaryItem>
               <div>
                 <div className="text-xl dark:text-white">
-                  {(data?.generationTotal || 0 / CAR_CONSUMPTION)
+                  {((data?.generationTotal || 0) / CAR_CONSUMPTION)
                     .toFixed(0)
                     .toLocaleString()}{" "}
                   km
@@ -168,8 +168,8 @@ export default async function Page() {
                 <div className="text-gray-500">Celkem vyrobeno dojezd</div>
                 <div className="text-gray-500">
                   {(
-                    data?.generationTotal ||
-                    0 / CAR_CONSUMPTION / datediff(START_DATE, new Date())
+                    ((data?.generationTotal || 0) /
+                    CAR_CONSUMPTION) / datediff(START_DATE, new Date())
                   ).toFixed(1)}{" "}
                   km/den
                 </div>
