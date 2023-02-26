@@ -15,12 +15,21 @@ const START_DATE = new Date(2023, 0, 9);
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
 
+type OverviewData = {
+  generationPower?: number;
+  usePower?: number;
+  buyPower?: number;
+  batterySoc?: number;
+  generationValue?: number;
+  generationTotal?: number;
+};
+
 const headers = {
   "Content-Type": "application/json",
   Authorization: AUTH,
 };
 
-async function fetchOverview() {
+async function fetchOverview(): Promise<OverviewData> {
   const filteredKeys = [
     "generationPower",
     "usePower",
@@ -68,7 +77,7 @@ async function fetchYear(year) {
     .then((result) => result?.records);
 }
 
-async function fetchForecast() {
+async function fetchForecast(): Promise<Array<number>> {
   const url =
     "https://api.forecast.solar/estimate/50.063212/15.675951/40/0/6.25";
   return fetch(url, {
@@ -105,18 +114,18 @@ export default async function Page() {
             />
             <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
               <SummaryItem title="Spotřeba">
-                {data?.usePower.toLocaleString()} W
+                {data?.usePower?.toLocaleString()} W
               </SummaryItem>
               <SummaryItem title="Výroba">
-                {data?.generationPower.toLocaleString()} W
+                {data?.generationPower?.toLocaleString()} W
               </SummaryItem>
               <SummaryItem title="Síť">
-                {Math.abs(data?.buyPower * -1).toLocaleString()} W
+                {Math.abs(data?.buyPower || 0 * -1).toLocaleString()} W
               </SummaryItem>
               <div>
                 <div className="flex space-x-2">
                   <div className="text-xl dark:text-white">
-                    {data?.batterySoc.toLocaleString()} %
+                    {data?.batterySoc?.toLocaleString()} %
                   </div>
                   <IconBattery value={data?.batterySoc} />
                 </div>
@@ -124,7 +133,7 @@ export default async function Page() {
               </div>
               <div className="space-y-2">
                 <SummaryItem title="Dnes vyrobeno">
-                  {data?.generationValue.toLocaleString()} kWh
+                  {data?.generationValue?.toLocaleString()} kWh
                 </SummaryItem>
                 {forecast && forecast.length === 2 && (
                   <div>
@@ -138,17 +147,20 @@ export default async function Page() {
                 )}
               </div>
               <SummaryItem title="Dnes vyrobeno dojezd">
-                {(data?.generationValue / CAR_CONSUMPTION).toLocaleString()} km
+                {(
+                  data?.generationValue || 0 / CAR_CONSUMPTION
+                ).toLocaleString()}{" "}
+                km
               </SummaryItem>
               <SummaryItem title="Dnes baterie auta">
-                {(data?.generationValue / (CAR_BATTERY_SIZE / 100))
+                {(data?.generationValue || 0 / (CAR_BATTERY_SIZE / 100))
                   .toFixed(1)
                   .toLocaleString()}{" "}
                 %
               </SummaryItem>
               <div>
                 <div className="text-xl dark:text-white">
-                  {(data?.generationTotal / CAR_CONSUMPTION)
+                  {(data?.generationTotal || 0 / CAR_CONSUMPTION)
                     .toFixed(0)
                     .toLocaleString()}{" "}
                   km
@@ -156,9 +168,8 @@ export default async function Page() {
                 <div className="text-gray-500">Celkem vyrobeno dojezd</div>
                 <div className="text-gray-500">
                   {(
-                    data?.generationTotal /
-                    CAR_CONSUMPTION /
-                    datediff(START_DATE, new Date())
+                    data?.generationTotal ||
+                    0 / CAR_CONSUMPTION / datediff(START_DATE, new Date())
                   ).toFixed(1)}{" "}
                   km/den
                 </div>
