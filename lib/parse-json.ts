@@ -1,0 +1,1 @@
+export const parseJSON = (resp) => (resp.json ? resp.json() : resp);

@@ -1,8 +1,8 @@
+import type { AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/globals.css";
 
-// This default export is required in a new `pages/_app.js` file.
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
