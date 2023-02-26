@@ -24,7 +24,6 @@ export default function OverviewChart({ generationPower, buyPower }) {
             d="M1 1H192"
             strokeWidth="1.5"
             strokeLinecap="round"
-            alt="Síť"
             className={[
               generationPower > 0 ? "" : "opacity-20",
               "stroke-black dark:stroke-white",
@@ -35,7 +34,6 @@ export default function OverviewChart({ generationPower, buyPower }) {
             stroke="black"
             strokeWidth="1.5"
             strokeLinecap="round"
-            alt="Síť"
             className={[
               buyPower < 0 ? "" : "opacity-20",
               "stroke-black dark:stroke-white",
@@ -45,7 +43,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
       </div>
       <div className="space-y-2 flex-row items-center">
         <div>
-          <IconHouse />
+          <IconHouse className={""} />
         </div>
       </div>
       <div className="flex items-end">
