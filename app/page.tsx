@@ -10,21 +10,25 @@ import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
 import { fetchChart, fetchOverview, fetchYear } from "../lib/plant-data";
 
-const AUTH = `Bearer ${process.env.AUTH_TOKEN}`;
 const START_DATE = new Date(2023, 0, 9);
+const TODAY = new Date();
+
+const CURRENT_MONTH = new Date();
+CURRENT_MONTH.setDate(1);
+
+const LAST_MONTH = new Date();
+LAST_MONTH.setDate(1);
+LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
+
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
-
-export const config = {
-  runtime: 'edge',
-};
 
 export default async function Page() {
   const [data, chart1, chart2, year, forecast] = await Promise.all([
     fetchOverview(),
-    fetchChart(2023, 1),
-    fetchChart(2023, 2),
-    fetchYear(2023),
+    fetchChart(LAST_MONTH.getFullYear(), LAST_MONTH.getMonth() + 1),
+    fetchChart(CURRENT_MONTH.getFullYear(), CURRENT_MONTH.getMonth() + 1),
+    fetchYear(CURRENT_MONTH.getFullYear()),
     fetchForecast(),
   ]);
 
@@ -97,7 +101,7 @@ export default async function Page() {
                 {(
                   (data?.generationTotal || 0) /
                   CAR_CONSUMPTION /
-                  datediff(START_DATE, new Date())
+                  datediff(START_DATE, TODAY)
                 ).toFixed(1)}{" "}
                 km/den
               </div>
