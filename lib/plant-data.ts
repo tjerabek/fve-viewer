@@ -41,16 +41,27 @@ export async function fetchOverview(): Promise<OverviewData> {
     }));
 }
 
-export async function fetchChart(year, month) {
-  return fetch(
-    `https://home.solarmanpv.com/maintain-s/history/batteryPower/3084557/stats/month?year=${year}&month=${month}`,
-    {
+export async function fetchChart(year, month, cached) {
+  const url = `https://home.solarmanpv.com/maintain-s/history/batteryPower/3084557/stats/month?year=${year}&month=${month}`;
+
+  if (!cached) {
+    return fetch(url, {
       method: "GET",
       headers,
-    }
-  )
-    .then(parseJSON)
-    .then((result) => result?.records);
+    })
+      .then(parseJSON)
+      .then((result) => result?.records);
+  }
+  if (cached) {
+    return fetch(url, {
+      method: "GET",
+      headers,
+      next: { revalidate: false },
+      cache: "force-cache",
+    })
+      .then(parseJSON)
+      .then((result) => result?.records);
+  }
 }
 
 export async function fetchYear(year) {

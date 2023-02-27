@@ -26,8 +26,8 @@ const CAR_BATTERY_SIZE = 78;
 export default async function Page() {
   const [data, chart1, chart2, year, forecast] = await Promise.all([
     fetchOverview(),
-    fetchChart(LAST_MONTH.getFullYear(), LAST_MONTH.getMonth() + 1),
-    fetchChart(CURRENT_MONTH.getFullYear(), CURRENT_MONTH.getMonth() + 1),
+    fetchChart(LAST_MONTH.getFullYear(), LAST_MONTH.getMonth() + 1, true),
+    fetchChart(CURRENT_MONTH.getFullYear(), CURRENT_MONTH.getMonth() + 1, false),
     fetchYear(CURRENT_MONTH.getFullYear()),
     fetchForecast(),
   ]);
