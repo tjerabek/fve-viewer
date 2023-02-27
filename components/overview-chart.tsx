@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import IconHouse from "./icon-house";
 import IconPowerplant from "./icon-powerplant";
@@ -8,38 +8,30 @@ export default function OverviewChart({ generationPower, buyPower }) {
   return (
     <div className="grid grid-cols-[auto_1fr_auto] grid-rows-2 p-6 md:p-10 max-w-[375px]">
       <div>
-        <div className="flex items-center">
+        <div className="flex items-center space-x-4">
           <div>
             <IconSun className={generationPower > 0 ? "" : "opacity-20"} />
           </div>
+          <div className={generationPower > 0 ? "" : "opacity-20"}>
+            <div className="text-sm border-[1.5px] border-black rounded-full px-2 dark:text-white dark:border-white">
+              {generationPower} W
+            </div>
+          </div>
         </div>
       </div>
-      <div className="row-span-2 py-3 px-4">
-        <svg
-          viewBox="0 0 194 73"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-        >
-          <path
-            d="M1 1H192"
-            strokeWidth="1.5"
-            strokeLinecap="round"
+      <div className="row-span-2 py-3 pr-4">
+        <div className="flex">
+          <div
             className={[
+              "w-1/2 bg-black h-[1.5px] dark:bg-white",
               generationPower > 0 ? "" : "opacity-20",
-              "stroke-black dark:stroke-white",
             ].join(" ")}
-          />
-          <path
-            d="M1 71H58.5C64.0228 71 68.5 66.5228 68.5 61V11C68.5 5.47715 72.9772 1 78.5 1H192"
-            stroke="black"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            className={[
-              buyPower < 0 ? "" : "opacity-20",
-              "stroke-black dark:stroke-white",
-            ].join(" ")}
-          />
-        </svg>
+          ></div>
+          <div className="w-1/2 bg-black h-[1.5px] dark:bg-white"></div>
+        </div>
+        <div className={buyPower < 0 ? "" : "opacity-20"}>
+          <div className="w-1/2 h-14 border-b-[1.5px] border-r-[1.5px] border-black rounded-br-xl dark:border-white"></div>
+        </div>
       </div>
       <div className="space-y-2 flex-row items-center">
         <div>
@@ -47,9 +39,15 @@ export default function OverviewChart({ generationPower, buyPower }) {
         </div>
       </div>
       <div className="flex items-end">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-4">
           <div>
             <IconPowerplant className={buyPower < 0 ? "" : "opacity-20"} />
+          </div>
+          <div className={buyPower < 0 ? "" : "opacity-20"}>
+            <div className="text-sm border-[1.5px] border-black rounded-full px-2 dark:text-white dark:border-white">
+              {buyPower && <div>{Math.abs(buyPower)} W</div>}
+              {!buyPower && <div>0 W</div>}
+            </div>
           </div>
         </div>
       </div>
