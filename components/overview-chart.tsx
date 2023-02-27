@@ -12,9 +12,14 @@ export default function OverviewChart({ generationPower, buyPower }) {
           <div>
             <IconSun className={generationPower > 0 ? "" : "opacity-20"} />
           </div>
-          <div className={generationPower > 0 ? "" : "opacity-20"}>
+          <div
+            className={[
+              generationPower > 0 ? "" : "opacity-20",
+              "flex-1 text-center",
+            ].join(" ")}
+          >
             <div className="text-sm border-[1.5px] border-black rounded-full px-2 dark:text-white dark:border-white">
-              {generationPower} W
+              {generationPower.toLocaleString()} W
             </div>
           </div>
         </div>
@@ -43,9 +48,14 @@ export default function OverviewChart({ generationPower, buyPower }) {
           <div>
             <IconPowerplant className={buyPower < 0 ? "" : "opacity-20"} />
           </div>
-          <div className={buyPower < 0 ? "" : "opacity-20"}>
+          <div
+            className={[
+              buyPower < 0 ? "" : "opacity-20",
+              "flex-1 text-center",
+            ].join(" ")}
+          >
             <div className="text-sm border-[1.5px] border-black rounded-full px-2 dark:text-white dark:border-white">
-              {buyPower && <div>{Math.abs(buyPower)} W</div>}
+              {buyPower && <div>{Math.abs(buyPower).toLocaleString()} W</div>}
               {!buyPower && <div>0 W</div>}
             </div>
           </div>
