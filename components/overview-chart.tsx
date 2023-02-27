@@ -44,7 +44,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
         </div>
       </div>
       <div className="flex items-end">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 flex-1">
           <div>
             <IconPowerplant className={buyPower < 0 ? "" : "opacity-20"} />
           </div>
