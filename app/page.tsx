@@ -23,11 +23,25 @@ LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
 
+const formatNumber = (number?: number, digits?: number) => {
+  if (!number) {
+    return number;
+  }
+  return number.toLocaleString(undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+};
+
 export default async function Page() {
   const [data, chart1, chart2, year, forecast] = await Promise.all([
     fetchOverview(),
     fetchChart(LAST_MONTH.getFullYear(), LAST_MONTH.getMonth() + 1, true),
-    fetchChart(CURRENT_MONTH.getFullYear(), CURRENT_MONTH.getMonth() + 1, false),
+    fetchChart(
+      CURRENT_MONTH.getFullYear(),
+      CURRENT_MONTH.getMonth() + 1,
+      false
+    ),
     fetchYear(CURRENT_MONTH.getFullYear()),
     fetchForecast(),
   ]);
@@ -45,18 +59,18 @@ export default async function Page() {
           />
           <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
             <SummaryItem title="Spotřeba">
-              {data?.usePower?.toLocaleString()} W
+              {formatNumber(data?.usePower)} W
             </SummaryItem>
             <SummaryItem title="Výroba">
-              {data?.generationPower?.toLocaleString()} W
+              {formatNumber(data?.generationPower)} W
             </SummaryItem>
             <SummaryItem title="Síť">
-              {Math.abs((data?.buyPower || 0) * -1).toLocaleString()} W
+              {formatNumber(Math.abs((data?.buyPower || 0) * -1))} W
             </SummaryItem>
             <div>
               <div className="flex space-x-2">
                 <div className="text-xl dark:text-white">
-                  {data?.batterySoc?.toLocaleString()} %
+                  {formatNumber(data?.batterySoc)} %
                 </div>
                 <IconBattery value={data?.batterySoc} />
               </div>
@@ -64,45 +78,40 @@ export default async function Page() {
             </div>
             <div className="space-y-2">
               <SummaryItem title="Dnes vyrobeno">
-                {data?.generationValue?.toLocaleString()} kWh
+                {formatNumber(data?.generationValue, 1)} kWh
               </SummaryItem>
               {forecast && forecast.length === 2 && (
                 <div>
                   <div className="text-gray-500">
-                    Předpověď dnes: {(forecast[0] / 1000).toFixed(1)} kWh
+                    Předpověď dnes: {formatNumber(forecast[0] / 1000, 1)} kWh
                   </div>
                   <div className="text-gray-500">
-                    Předpověď zítra: {(forecast[1] / 1000).toFixed(1)} kWh
+                    Předpověď zítra: {formatNumber(forecast[1] / 1000, 1)} kWh
                   </div>
                 </div>
               )}
             </div>
             <SummaryItem title="Dnes vyrobeno dojezd">
-              {(
-                (data?.generationValue || 0) / CAR_CONSUMPTION
-              ).toLocaleString()}{" "}
-              km
+              {formatNumber((data?.generationValue || 0) / CAR_CONSUMPTION)} km
             </SummaryItem>
             <SummaryItem title="Dnes baterie auta">
-              {((data?.generationValue || 0) / (CAR_BATTERY_SIZE / 100))
-                .toFixed(1)
-                .toLocaleString()}{" "}
+              {formatNumber(
+                (data?.generationValue || 0) / (CAR_BATTERY_SIZE / 100)
+              , 1)}{" "}
               %
             </SummaryItem>
             <div>
               <div className="text-xl dark:text-white">
-                {((data?.generationTotal || 0) / CAR_CONSUMPTION)
-                  .toFixed(0)
-                  .toLocaleString()}{" "}
+                {formatNumber((data?.generationTotal || 0) / CAR_CONSUMPTION)}{" "}
                 km
               </div>
               <div className="text-gray-500">Celkem vyrobeno dojezd</div>
               <div className="text-gray-500">
-                {(
+                {formatNumber(
                   (data?.generationTotal || 0) /
-                  CAR_CONSUMPTION /
-                  datediff(START_DATE, TODAY)
-                ).toFixed(1)}{" "}
+                    CAR_CONSUMPTION /
+                    datediff(START_DATE, TODAY)
+                )}{" "}
                 km/den
               </div>
             </div>
@@ -125,13 +134,13 @@ export default async function Page() {
                   )}
                 </div>
                 <TableItem title="Výroba">
-                  {item.generationValue.toFixed(1)} kWh
+                  {formatNumber(item.generationValue, 1)} kWh
                 </TableItem>
                 <TableItem title="Nákup">
-                  {item.buyValue.toFixed(1)} kWh
+                  {formatNumber(item.buyValue, 1)} kWh
                 </TableItem>
                 <TableItem title="Procenta">
-                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
+                  {formatNumber(item.generationValue / (item.useValue / 100), 1)} %
                 </TableItem>
               </div>
             ))}
@@ -148,13 +157,13 @@ export default async function Page() {
                   {item.day}.{item.month}.{item.year}
                 </div>
                 <TableItem title="Výroba">
-                  {item.generationValue.toFixed(1)} kWh
+                  {formatNumber(item.generationValue, 1)} kWh
                 </TableItem>
                 <TableItem title="Nákup">
-                  {item.buyValue.toFixed(1)} kWh
+                  {formatNumber(item.buyValue, 1)} kWh
                 </TableItem>
                 <TableItem title="Procenta">
-                  {(item.generationValue / (item.useValue / 100)).toFixed(1)} %
+                  {formatNumber(item.generationValue / (item.useValue / 100), 1)} %
                 </TableItem>
               </div>
             ))}
