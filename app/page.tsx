@@ -33,7 +33,7 @@ const formatNumber = (number?: number, digits?: number) => {
   });
 };
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const [data, chart, forecast] = await Promise.all([
