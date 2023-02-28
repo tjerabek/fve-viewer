@@ -11,3 +11,12 @@ export async function fetchDbOverview(): Promise<OverviewData> {
     .single();
   return data as OverviewData;
 }
+
+export async function fetchDbChart(): Promise<Array<any>> {
+  const { data, error } = await supabase
+    .from("view_days")
+    .select("*")
+    .order("date", { ascending: false })
+    .limit(31);
+  return data || [];
+}
