@@ -7,9 +7,7 @@ import TableHeader from "../components/table-header";
 import TableItem from "../components/table-item";
 import Title from "../components/title";
 import { datediff } from "../lib/datediff";
-import { supabase } from "../lib/db";
 import { fetchForecast } from "../lib/forecast";
-import { fetchChart, fetchOverview, fetchYear } from "../lib/plant-data";
 import { fetchDbChart, fetchDbOverview } from "../lib/plant-db-data";
 
 const START_DATE = new Date(2023, 0, 9);
@@ -35,25 +33,16 @@ const formatNumber = (number?: number, digits?: number) => {
   });
 };
 
+export const dynamic = 'force-static';
+
 export default async function Page() {
   const [data, chart, forecast] = await Promise.all([
     fetchDbOverview(),
     fetchDbChart(),
-    /*
-    fetchChart(LAST_MONTH.getFullYear(), LAST_MONTH.getMonth() + 1, true),
-    fetchChart(
-      CURRENT_MONTH.getFullYear(),
-      CURRENT_MONTH.getMonth() + 1,
-      false
-    ),
-    */
     // fetchYear(CURRENT_MONTH.getFullYear()),
     fetchForecast(),
   ]);
-
-  // const chart = chart1.concat(chart2).reverse().slice(0, 31);
   const reverseChart = chart.slice().reverse();
-  // const year = ;
 
   return (
     <>
