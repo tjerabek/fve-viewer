@@ -9,6 +9,7 @@ export type OverviewData = {
   generationValue?: number;
   generationTotal?: number;
   buyValue?: number;
+  date?: Date;
 };
 
 const AUTH = `Bearer ${process.env.AUTH_TOKEN}`;
@@ -39,6 +40,7 @@ export async function fetchOverview(): Promise<OverviewData> {
     .then(parseJSON)
     .then((result) => filterKeys(result, filteredKeys))
     .then((result) => ({
+      date: new Date(),
       ...result,
     }));
 }
