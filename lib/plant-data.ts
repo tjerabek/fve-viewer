@@ -8,6 +8,7 @@ export type OverviewData = {
   batterySoc?: number;
   generationValue?: number;
   generationTotal?: number;
+  buyValue?: number;
 };
 
 const AUTH = `Bearer ${process.env.AUTH_TOKEN}`;
@@ -25,6 +26,7 @@ export async function fetchOverview(): Promise<OverviewData> {
     "batterySoc",
     "generationValue",
     "generationTotal",
+    "buyValue",
   ];
 
   return fetch(
