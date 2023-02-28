@@ -9,6 +9,7 @@ import Title from "../components/title";
 import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
 import { fetchChart, fetchOverview, fetchYear } from "../lib/plant-data";
+import { fetchDbOverview } from "../lib/plant-db-data";
 
 const START_DATE = new Date(2023, 0, 9);
 const TODAY = new Date();
@@ -35,7 +36,7 @@ const formatNumber = (number?: number, digits?: number) => {
 
 export default async function Page() {
   const [data, chart1, chart2, year, forecast] = await Promise.all([
-    fetchOverview(),
+    fetchDbOverview(),
     fetchChart(LAST_MONTH.getFullYear(), LAST_MONTH.getMonth() + 1, true),
     fetchChart(
       CURRENT_MONTH.getFullYear(),
