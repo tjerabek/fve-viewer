@@ -122,7 +122,7 @@ export default async function Page() {
             {chart?.map((item, key) => (
               <div
                 key={key}
-                className="grid md:grid-cols-4 py-4 md:py-0 border-b dark:border-gray-800"
+                className="grid md:grid-cols-3 py-4 md:py-0 border-b dark:border-gray-800"
               >
                 <div className="font-semibold">
                   {new Intl.DateTimeFormat("cs-CZ", {}).format(
@@ -134,13 +134,6 @@ export default async function Page() {
                 </TableItem>
                 <TableItem title="Nákup">
                   {formatNumber(item.buyValue, 1)} kWh
-                </TableItem>
-                <TableItem title="Procenta">
-                  {formatNumber(
-                    item.generationValue / (item.useValue / 100),
-                    1
-                  )}{" "}
-                  %
                 </TableItem>
               </div>
             ))}
