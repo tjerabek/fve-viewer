@@ -54,9 +54,15 @@ export default async function Page() {
             buyPower={data?.buyPower}
             usePower={data?.usePower}
           />
-          <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-5">
+          <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
+            <SummaryItem title="Výroba">
+              {formatNumber(data?.generationPower)} W
+            </SummaryItem>
             <SummaryItem title="Spotřeba">
               {formatNumber(data?.usePower)} W
+            </SummaryItem>
+            <SummaryItem title="Síť">
+              {formatNumber(Math.abs(data?.buyPower || 0))} W
             </SummaryItem>
             <div>
               <div className="flex space-x-2">
