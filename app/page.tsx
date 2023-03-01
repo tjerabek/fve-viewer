@@ -22,6 +22,7 @@ LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
 
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
+const BUY_PRICE = 6;
 
 const formatNumber = (number?: number, digits?: number) => {
   if (!number) {
@@ -113,19 +114,27 @@ export default async function Page() {
                 {formatNumber(data?.buyValue, 1)} kWh
               </SummaryItem>
             </div>
-            <div>
-              <div className="text-xl dark:text-white">
-                {formatNumber((data?.generationTotal || 0) / CAR_CONSUMPTION, 0)}{" "}
-                km
-              </div>
-              <div className="text-gray-500">Celkem vyrobeno dojezd</div>
-              <div className="text-gray-500">
+            <div className="space-y-2">
+              <SummaryItem title="Celkem vyrobeno">
                 {formatNumber(
-                  (data?.generationTotal || 0) /
-                    CAR_CONSUMPTION /
-                    datediff(START_DATE, TODAY)
-                , 0)}{" "}
-                km/den
+                  (data?.generationTotal || 0) / CAR_CONSUMPTION,
+                  0
+                )}{" "}
+                km
+              </SummaryItem>
+              <div>
+                <div className="grid grid-cols-2 text-gray-500">
+                  <div>Průměrně</div>
+                  <div className="text-right">
+                    {formatNumber(
+                      (data?.generationTotal || 0) /
+                        CAR_CONSUMPTION /
+                        datediff(START_DATE, TODAY),
+                      0
+                    )}{" "}
+                    km/den
+                  </div>
+                </div>
               </div>
             </div>
           </div>
