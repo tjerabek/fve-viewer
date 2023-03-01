@@ -33,7 +33,7 @@ const formatNumber = (number?: number, digits?: number) => {
   });
 };
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const [data, chart, forecast] = await Promise.all([
@@ -51,16 +51,11 @@ export default async function Page() {
           <OverviewChart
             generationPower={data?.generationPower}
             buyPower={data?.buyPower}
+            usePower={data?.usePower}
           />
-          <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-4">
+          <div className="p-6 md:p-10 gap-8 grid grid-cols-1 md:grid-cols-5">
             <SummaryItem title="Spotřeba">
               {formatNumber(data?.usePower)} W
-            </SummaryItem>
-            <SummaryItem title="Výroba">
-              {formatNumber(data?.generationPower)} W
-            </SummaryItem>
-            <SummaryItem title="Síť">
-              {formatNumber(Math.abs((data?.buyPower || 0) * -1))} W
             </SummaryItem>
             <div>
               <div className="flex space-x-2">
@@ -75,30 +70,52 @@ export default async function Page() {
               <SummaryItem title="Dnes vyrobeno">
                 {formatNumber(data?.generationValue, 1)} kWh
               </SummaryItem>
-              {forecast && forecast.length === 2 && (
-                <div>
-                  <div className="text-gray-500">
-                    Předpověď dnes: {formatNumber(forecast[0] / 1000, 1)} kWh
-                  </div>
-                  <div className="text-gray-500">
-                    Předpověď zítra: {formatNumber(forecast[1] / 1000, 1)} kWh
+              <div>
+                <div className="grid grid-cols-2 text-gray-500">
+                  <div>Auto dojezd</div>
+                  <div className="text-right">
+                    {formatNumber(
+                      (data?.generationValue || 0) / CAR_CONSUMPTION
+                    )}{" "}
+                    km
                   </div>
                 </div>
-              )}
+                <div className="grid grid-cols-2 text-gray-500">
+                  <div>Auto baterie</div>
+                  <div className="text-right">
+                    {formatNumber(
+                      (data?.generationValue || 0) / (CAR_BATTERY_SIZE / 100),
+                      1
+                    )}
+                    %
+                  </div>
+                </div>
+                {forecast && forecast.length === 2 && (
+                  <>
+                    <div className="grid grid-cols-2 text-gray-500">
+                      <div>Předpověď dnes</div>
+                      <div className="text-right">
+                        {formatNumber(forecast[0] / 1000, 1)} kWh
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 text-gray-500">
+                      <div>Předpověď zítra</div>
+                      <div className="text-right">
+                        {formatNumber(forecast[1] / 1000, 1)} kWh
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-            <SummaryItem title="Dnes vyrobeno dojezd">
-              {formatNumber((data?.generationValue || 0) / CAR_CONSUMPTION)} km
-            </SummaryItem>
-            <SummaryItem title="Dnes baterie auta">
-              {formatNumber(
-                (data?.generationValue || 0) / (CAR_BATTERY_SIZE / 100),
-                1
-              )}{" "}
-              %
-            </SummaryItem>
+            <div className="space-y-2">
+              <SummaryItem title="Dnes nakoupeno">
+                {formatNumber(data?.buyValue, 1)} kWh
+              </SummaryItem>
+            </div>
             <div>
               <div className="text-xl dark:text-white">
-                {formatNumber((data?.generationTotal || 0) / CAR_CONSUMPTION)}{" "}
+                {formatNumber((data?.generationTotal || 0) / CAR_CONSUMPTION, 0)}{" "}
                 km
               </div>
               <div className="text-gray-500">Celkem vyrobeno dojezd</div>
@@ -107,7 +124,7 @@ export default async function Page() {
                   (data?.generationTotal || 0) /
                     CAR_CONSUMPTION /
                     datediff(START_DATE, TODAY)
-                )}{" "}
+                , 0)}{" "}
                 km/den
               </div>
             </div>

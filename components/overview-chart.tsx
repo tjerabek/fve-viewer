@@ -4,7 +4,7 @@ import IconHouse from "./icon-house";
 import IconPowerplant from "./icon-powerplant";
 import IconSun from "./icon-sun";
 
-export default function OverviewChart({ generationPower, buyPower }) {
+export default function OverviewChart({ generationPower, buyPower, usePower }) {
   return (
     <div className="grid grid-cols-[auto_1fr_auto] grid-rows-2 p-6 md:p-10 max-w-[375px]">
       <div>
@@ -24,7 +24,7 @@ export default function OverviewChart({ generationPower, buyPower }) {
           </div>
         </div>
       </div>
-      <div className="row-span-2 py-3 pr-4">
+      <div className="row-span-2 py-3 mr-2">
         <div className="flex">
           <div
             className={[
@@ -38,10 +38,8 @@ export default function OverviewChart({ generationPower, buyPower }) {
           <div className="w-1/2 h-14 border-b-[1.5px] border-r-[1.5px] border-black rounded-br-xl dark:border-white"></div>
         </div>
       </div>
-      <div className="space-y-2 flex-row items-center">
-        <div>
-          <IconHouse className={""} />
-        </div>
+      <div className="">
+        <IconHouse className={""} />
       </div>
       <div className="flex items-end">
         <div className="flex items-center space-x-4 flex-1">

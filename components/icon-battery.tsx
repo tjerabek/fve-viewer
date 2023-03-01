@@ -3,7 +3,7 @@
 export default function IconBattery({ value }) {
   return (
     <div className="flex items-center space-x-px">
-      <div className="border border-gray-500 w-[21px] h-[12px] rounded p-px">
+      <div className="border-[1.5px] border-gray-500 w-[21px] h-[12px] rounded p-px">
         <div
           className="h-full bg-gray-800 dark:bg-gray-100 rounded-sm"
           style={{ width: `${value}%` }}
