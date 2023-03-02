@@ -12,7 +12,6 @@ export default function RootLayout({
       <head>
         <title>FVE</title>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon.png" />
       </head>
       <body className="dark:bg-black">{children}</body>
