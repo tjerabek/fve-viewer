@@ -9,7 +9,11 @@ import Title from "../components/title";
 import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
 import { formatNumber } from "../lib/formatNumber";
-import { fetchDbChart, fetchDbOverview, fetchDbYear } from "../lib/plant-db-data";
+import {
+  fetchDbChart,
+  fetchDbOverview,
+  fetchDbYear,
+} from "../lib/plant-db-data";
 
 const START_DATE = new Date(2023, 0, 9);
 const TODAY = new Date();
@@ -72,8 +76,9 @@ export default async function Page() {
                   <div>Auto dojezd</div>
                   <div className="text-right">
                     {formatNumber(
-                      (data?.generationValue || 0) / CAR_CONSUMPTION
-                    , 1)}{" "}
+                      (data?.generationValue || 0) / CAR_CONSUMPTION,
+                      1
+                    )}{" "}
                     km
                   </div>
                 </div>
@@ -147,9 +152,10 @@ export default async function Page() {
                 className="grid md:grid-cols-3 py-4 md:py-0 border-b dark:border-gray-800"
               >
                 <div className="font-semibold">
-                  {new Intl.DateTimeFormat("cs-CZ", { timeZone: "Europe/Prague", month: "long" }).format(
-                    new Date(item.month)
-                  )}
+                  {new Intl.DateTimeFormat("cs-CZ", {
+                    timeZone: "Europe/Prague",
+                    month: "long",
+                  }).format(new Date(item.month))}
                 </div>
                 <TableItem title="Výroba">
                   {formatNumber(item.generationValue, 1)} kWh

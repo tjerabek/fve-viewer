@@ -18,7 +18,7 @@ export default function BuyChart({ reverseChart }) {
           <LineChart width={500} height={200} data={reverseChart}>
             <XAxis dataKey="name" />
             <CartesianGrid vertical={false} />
-            <Line type="monotone" dataKey="buyValue" stroke="#2B2A2B" />
+            <Line type="monotone" dataKey="buyValue" stroke="#2B2A2B" isAnimationActive={false} strokeWidth={1.5} />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -27,7 +27,7 @@ export default function BuyChart({ reverseChart }) {
           <LineChart width={500} height={200} data={reverseChart}>
             <XAxis dataKey="name" />
             <CartesianGrid vertical={false} stroke="#353d4e" />
-            <Line type="monotone" dataKey="buyValue" stroke="#6b7280" />
+            <Line type="monotone" dataKey="buyValue" stroke="#6b7280" isAnimationActive={false} strokeWidth={1.5} />
           </LineChart>
         </ResponsiveContainer>
       </div>

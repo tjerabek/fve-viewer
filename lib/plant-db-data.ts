@@ -28,3 +28,12 @@ export async function fetchDbYear(): Promise<Array<any>> {
     .order("month", { ascending: false });
   return data || [];
 }
+
+export async function fetchDbToday(): Promise<Array<any>> {
+  const { data, error } = await supabase
+    .from("overview")
+    .select("*")
+    .eq("date", new Date().toISOString())
+    .order("id", { ascending: true });
+  return data || [];
+}
