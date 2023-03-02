@@ -147,7 +147,7 @@ export default async function Page() {
                 className="grid md:grid-cols-3 py-4 md:py-0 border-b dark:border-gray-800"
               >
                 <div className="font-semibold">
-                  {new Intl.DateTimeFormat("cs-CZ", { month: "long" }).format(
+                  {new Intl.DateTimeFormat("cs-CZ", { }).format(
                     new Date(item.month)
                   )}
                 </div>
