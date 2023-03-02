@@ -20,3 +20,11 @@ export async function fetchDbChart(): Promise<Array<any>> {
     .limit(31);
   return data || [];
 }
+
+export async function fetchDbYear(): Promise<Array<any>> {
+  const { data, error } = await supabase
+    .from("view_months")
+    .select("*")
+    .order("month", { ascending: false });
+  return data || [];
+}

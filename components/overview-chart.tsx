@@ -1,5 +1,6 @@
 "use client";
 
+import { formatNumber } from "../lib/formatNumber";
 import IconHouse from "./icon-house";
 import IconPowerplant from "./icon-powerplant";
 import IconSun from "./icon-sun";
@@ -19,7 +20,7 @@ export default function OverviewChart({ generationPower, buyPower, usePower }) {
             ].join(" ")}
           >
             <div className="text-sm border-[1.5px] border-black rounded-full px-2 dark:text-white dark:border-white">
-              {generationPower.toLocaleString()} W
+              {formatNumber(generationPower, 0)} W
             </div>
           </div>
         </div>
@@ -53,7 +54,7 @@ export default function OverviewChart({ generationPower, buyPower, usePower }) {
             ].join(" ")}
           >
             <div className="text-sm border-[1.5px] border-black rounded-full px-2 dark:text-white dark:border-white">
-              {buyPower && <div>{Math.abs(buyPower).toLocaleString()} W</div>}
+              {buyPower && <div>{formatNumber(Math.abs(buyPower), 0)} W</div>}
               {!buyPower && <div>0 W</div>}
             </div>
           </div>

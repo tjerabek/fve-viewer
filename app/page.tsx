@@ -8,7 +8,8 @@ import TableItem from "../components/table-item";
 import Title from "../components/title";
 import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
-import { fetchDbChart, fetchDbOverview } from "../lib/plant-db-data";
+import { formatNumber } from "../lib/formatNumber";
+import { fetchDbChart, fetchDbOverview, fetchDbYear } from "../lib/plant-db-data";
 
 const START_DATE = new Date(2023, 0, 9);
 const TODAY = new Date();
@@ -22,25 +23,14 @@ LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
 
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
-const BUY_PRICE = 6;
-
-const formatNumber = (number?: number, digits?: number) => {
-  if (!number) {
-    return number;
-  }
-  return number.toLocaleString(undefined, {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  });
-};
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const [data, chart, forecast] = await Promise.all([
+  const [data, chart, year, forecast] = await Promise.all([
     fetchDbOverview(),
     fetchDbChart(),
-    // fetchYear(CURRENT_MONTH.getFullYear()),
+    fetchDbYear(),
     fetchForecast(),
   ]);
   const reverseChart = chart.slice().reverse();
@@ -83,7 +73,7 @@ export default async function Page() {
                   <div className="text-right">
                     {formatNumber(
                       (data?.generationValue || 0) / CAR_CONSUMPTION
-                    )}{" "}
+                    , 1)}{" "}
                     km
                   </div>
                 </div>
@@ -149,6 +139,27 @@ export default async function Page() {
           <Title>Nákup</Title>
           <BuyChart reverseChart={reverseChart} />
 
+          <div className="p-6 md:p-10 dark:text-white">
+            <TableHeader title="Datum" />
+            {year?.map((item, key) => (
+              <div
+                key={key}
+                className="grid md:grid-cols-3 py-4 md:py-0 border-b dark:border-gray-800"
+              >
+                <div className="font-semibold">
+                  {new Intl.DateTimeFormat("cs-CZ", { month: "long" }).format(
+                    new Date(item.month)
+                  )}
+                </div>
+                <TableItem title="Výroba">
+                  {formatNumber(item.generationValue, 1)} kWh
+                </TableItem>
+                <TableItem title="Nákup">
+                  {formatNumber(item.buyValue, 1)} kWh
+                </TableItem>
+              </div>
+            ))}
+          </div>
           <div className="p-6 md:p-10 dark:text-white">
             <TableHeader title="Datum" />
             {chart?.map((item, key) => (
