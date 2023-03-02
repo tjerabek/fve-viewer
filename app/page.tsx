@@ -149,13 +149,26 @@ export default async function Page() {
             {year?.map((item, key) => (
               <div
                 key={key}
-                className="grid md:grid-cols-3 py-4 md:py-0 border-b dark:border-gray-800"
+                className="grid md:grid-cols-4 py-4 md:py-0 border-b dark:border-gray-800 items-center"
               >
-                <div className="font-semibold">
-                  {new Intl.DateTimeFormat("cs-CZ", {
-                    timeZone: "Europe/Prague",
-                    month: "long",
-                  }).format(new Date(item.month))}
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold">
+                    {new Intl.DateTimeFormat("cs-CZ", {
+                      timeZone: "Europe/Prague",
+                      month: "long",
+                    }).format(new Date(item.month))}
+                  </div>
+                  <div className="h-1 w-1/4 bg-gray-100 dark:bg-gray-800 rounded-full md:hidden">
+                    <div
+                      className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
+                      style={{
+                        width: `${
+                          item.generationValue /
+                          ((item.generationValue + item.buyValue) / 100)
+                        }%`,
+                      }}
+                    ></div>
+                  </div>
                 </div>
                 <TableItem title="Výroba">
                   {formatNumber(item.generationValue, 1)} kWh
@@ -163,6 +176,19 @@ export default async function Page() {
                 <TableItem title="Nákup">
                   {formatNumber(item.buyValue, 1)} kWh
                 </TableItem>
+                <div className="md:flex justify-end hidden">
+                  <div className="h-1 w-1/4 bg-gray-100 dark:bg-gray-800 rounded-full">
+                    <div
+                      className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
+                      style={{
+                        width: `${
+                          item.generationValue /
+                          ((item.generationValue + item.buyValue) / 100)
+                        }%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -171,12 +197,25 @@ export default async function Page() {
             {chart?.map((item, key) => (
               <div
                 key={key}
-                className="grid md:grid-cols-3 py-4 md:py-0 border-b dark:border-gray-800"
+                className="grid md:grid-cols-4 py-4 md:py-0 border-b dark:border-gray-800 items-center"
               >
-                <div className="font-semibold">
-                  {new Intl.DateTimeFormat("cs-CZ", {}).format(
-                    new Date(item.date)
-                  )}
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold">
+                    {new Intl.DateTimeFormat("cs-CZ", {}).format(
+                      new Date(item.date)
+                    )}
+                  </div>
+                  <div className="h-1 w-1/4 bg-gray-100 dark:bg-gray-800 rounded-full md:hidden">
+                    <div
+                      className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
+                      style={{
+                        width: `${
+                          item.generationValue /
+                          ((item.generationValue + item.buyValue) / 100)
+                        }%`,
+                      }}
+                    ></div>
+                  </div>
                 </div>
                 <TableItem title="Výroba">
                   {formatNumber(item.generationValue, 1)} kWh
@@ -184,6 +223,19 @@ export default async function Page() {
                 <TableItem title="Nákup">
                   {formatNumber(item.buyValue, 1)} kWh
                 </TableItem>
+                <div className="md:flex justify-end hidden">
+                  <div className="h-1 w-1/4 bg-gray-100 dark:bg-gray-800 rounded-full">
+                    <div
+                      className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
+                      style={{
+                        width: `${
+                          item.generationValue /
+                          ((item.generationValue + item.buyValue) / 100)
+                        }%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
