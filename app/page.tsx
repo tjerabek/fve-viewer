@@ -27,6 +27,7 @@ LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
 
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
+const PRICE = 6;
 
 export const dynamic = "force-dynamic";
 
@@ -114,6 +115,13 @@ export default async function Page() {
               <SummaryItem title="Dnes nakoupeno">
                 {formatNumber(data?.buyValue, 1)} kWh
               </SummaryItem>
+              <div className="grid grid-cols-2 text-gray-500">
+                <div>Cena</div>
+                <div className="text-right">
+                  {formatNumber((data?.buyValue || 0) * PRICE, 0)}{" "}
+                  Kč
+                </div>
+              </div>
             </div>
             <div className="space-y-2">
               <SummaryItem title="Celkem vyrobeno">
