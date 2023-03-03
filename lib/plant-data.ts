@@ -40,7 +40,6 @@ export async function fetchOverview(): Promise<OverviewData> {
     .then(parseJSON)
     .then((result) => filterKeys(result, filteredKeys))
     .then((result) => ({
-      date: new Date(),
       ...result,
     }));
 }
