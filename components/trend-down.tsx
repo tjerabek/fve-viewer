@@ -10,9 +10,9 @@ export default function TrendDown({ value }) {
       ].join(" ")}
     >
       {value > 0 ? (
-        <span className="opacity-50">△</span>
+        <span className="opacity-50">⌃</span>
       ) : (
-        <span className="opacity-50">▽</span>
+        <span className="opacity-50 rotate-180">⌃</span>
       )}
     </div>
   );
