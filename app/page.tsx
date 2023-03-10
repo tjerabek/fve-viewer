@@ -6,6 +6,8 @@ import SummaryItem from "../components/summary-item";
 import TableHeader from "../components/table-header";
 import TableItem from "../components/table-item";
 import Title from "../components/title";
+import TrendDown from "../components/trend-down";
+import TrendUp from "../components/trend-up";
 import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
 import { formatNumber } from "../lib/formatNumber";
@@ -13,6 +15,7 @@ import {
   fetchDbChart,
   fetchDbOverview,
   fetchDbYear,
+  fetchDbYesterday,
 } from "../lib/plant-db-data";
 
 const START_DATE = new Date(2023, 0, 9);
@@ -32,11 +35,12 @@ const PRICE = 6;
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const [data, chart, year, forecast] = await Promise.all([
+  const [data, chart, year, forecast, yesterday] = await Promise.all([
     fetchDbOverview(),
     fetchDbChart(),
     fetchDbYear(),
     fetchForecast(),
+    fetchDbYesterday(),
   ]);
   const reverseChart = chart.slice().reverse();
 
@@ -70,7 +74,14 @@ export default async function Page() {
             </div>
             <div className="space-y-2">
               <SummaryItem title="Dnes vyrobeno">
-                {formatNumber(data?.generationValue, 1)} kWh
+                <div className="flex justify-between">
+                  <div>{formatNumber(data?.generationValue, 1)} kWh</div>
+                  <TrendUp
+                    value={
+                      (data?.generationValue || 0) - yesterday?.generationValue
+                    }
+                  />
+                </div>
               </SummaryItem>
               <div>
                 <div className="grid grid-cols-2 text-gray-500">
@@ -113,13 +124,17 @@ export default async function Page() {
             </div>
             <div className="space-y-2">
               <SummaryItem title="Dnes nakoupeno">
-                {formatNumber(data?.buyValue, 1)} kWh
+                <div className="flex justify-between">
+                  <div>{formatNumber(data?.buyValue, 1)} kWh</div>
+                  <TrendDown
+                    value={(data?.buyValue || 0) - yesterday?.buyValue}
+                  />
+                </div>
               </SummaryItem>
               <div className="grid grid-cols-2 text-gray-500">
                 <div>Cena</div>
                 <div className="text-right">
-                  {formatNumber((data?.buyValue || 0) * PRICE, 0)}{" "}
-                  Kč
+                  {formatNumber((data?.buyValue || 0) * PRICE, 0)} Kč
                 </div>
               </div>
             </div>

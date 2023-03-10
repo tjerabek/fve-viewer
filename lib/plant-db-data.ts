@@ -37,3 +37,8 @@ export async function fetchDbToday(): Promise<Array<any>> {
     .order("id", { ascending: true });
   return data || [];
 }
+
+export async function fetchDbYesterday(): Promise<any> {
+  const { data, error } = await supabase.rpc('yesterday_data').single();
+  return data;
+}
