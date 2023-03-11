@@ -104,6 +104,12 @@ export default async function Page() {
                     %
                   </div>
                 </div>
+                <div className="grid grid-cols-2 text-gray-500">
+                  <div>Včera ve stejnou dobu</div>
+                  <div className="text-right">
+                    {formatNumber(yesterday?.generationValue, 1)} kWh
+                  </div>
+                </div>
                 {forecast && forecast.length === 2 && (
                   <>
                     <div className="grid grid-cols-2 text-gray-500">
@@ -131,10 +137,18 @@ export default async function Page() {
                   />
                 </div>
               </SummaryItem>
-              <div className="grid grid-cols-2 text-gray-500">
-                <div>Cena</div>
-                <div className="text-right">
-                  {formatNumber((data?.buyValue || 0) * PRICE, 0)} Kč
+              <div>
+                <div className="grid grid-cols-2 text-gray-500">
+                  <div>Včera ve stejnou dobu</div>
+                  <div className="text-right">
+                    {formatNumber(yesterday?.buyValue, 1)} kWh
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 text-gray-500">
+                  <div>Cena</div>
+                  <div className="text-right">
+                    {formatNumber((data?.buyValue || 0) * PRICE, 0)} Kč
+                  </div>
                 </div>
               </div>
             </div>
