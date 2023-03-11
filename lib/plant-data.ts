@@ -37,6 +37,7 @@ export async function fetchOverview(): Promise<OverviewData> {
       headers,
     }
   )
+    .then((result) => { console.log({ result }); return result; })
     .then(parseJSON)
     .then((result) => filterKeys(result, filteredKeys))
     .then((result) => ({
