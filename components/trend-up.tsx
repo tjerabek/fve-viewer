@@ -4,7 +4,7 @@ export default function TrendUp({ value }) {
   return (
     <div
       className={[
-        "bg-gray-50 dark:bg-gray-800 w-7 h-7 flex justify-center items-center rounded-lg text-opacity-80 text-base font-semibold",
+        "bg-gray-50 dark:bg-gray-800 w-5 h-5 flex justify-center items-center rounded-lg text-opacity-80 text-xs font-semibold",
         // value > 0 ? "bg-green-50 text-green-900" : "",
         // value < 0 ? "bg-orange-50 text-orange-900" : "",
       ].join(" ")}

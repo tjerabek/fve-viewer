@@ -6,7 +6,6 @@ import SummaryItem from "../components/summary-item";
 import TableHeader from "../components/table-header";
 import TableItem from "../components/table-item";
 import Title from "../components/title";
-import TrendDown from "../components/trend-down";
 import TrendUp from "../components/trend-up";
 import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
@@ -76,11 +75,6 @@ export default async function Page() {
               <SummaryItem title="Dnes vyrobeno">
                 <div className="flex justify-between">
                   <div>{formatNumber(data?.generationValue, 1)} kWh</div>
-                  <TrendUp
-                    value={
-                      (data?.generationValue || 0) - yesterday?.generationValue
-                    }
-                  />
                 </div>
               </SummaryItem>
               <div>
@@ -105,9 +99,15 @@ export default async function Page() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 text-gray-500">
-                  <div>Včera ve stejnou dobu</div>
-                  <div className="text-right">
-                    {formatNumber(yesterday?.generationValue, 1)} kWh
+                  <div>Před 24h</div>
+                  <div className="text-right flex justify-end space-x-2">
+                    <TrendUp
+                      value={
+                        (data?.generationValue || 0) -
+                        yesterday?.generationValue
+                      }
+                    />
+                    <div>{formatNumber(yesterday?.generationValue, 1)} kWh</div>
                   </div>
                 </div>
                 {forecast && forecast.length === 2 && (
@@ -132,16 +132,19 @@ export default async function Page() {
               <SummaryItem title="Dnes nakoupeno">
                 <div className="flex justify-between">
                   <div>{formatNumber(data?.buyValue, 1)} kWh</div>
-                  <TrendDown
-                    value={(data?.buyValue || 0) - yesterday?.buyValue}
-                  />
                 </div>
               </SummaryItem>
               <div>
                 <div className="grid grid-cols-2 text-gray-500">
-                  <div>Včera ve stejnou dobu</div>
-                  <div className="text-right">
-                    {formatNumber(yesterday?.buyValue, 1)} kWh
+                  <div>Před 24h</div>
+                  <div className="text-right flex justify-end space-x-2">
+                    <TrendUp
+                      value={
+                        (data?.generationValue || 0) -
+                        yesterday?.generationValue
+                      }
+                    />
+                    <div>{formatNumber(yesterday?.buyValue, 1)} kWh</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 text-gray-500">
