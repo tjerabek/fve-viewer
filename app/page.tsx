@@ -1,4 +1,5 @@
 import BuyChart from "../components/buy-chart";
+import Days from "../components/days";
 import GenerationChart from "../components/generation-chart";
 import IconBattery from "../components/icon-battery";
 import OverviewChart from "../components/overview-chart";
@@ -106,6 +107,7 @@ export default async function Page() {
                         (data?.generationValue || 0) -
                         yesterday?.generationValue
                       }
+                      isReverse={false}
                     />
                     <div>{formatNumber(yesterday?.generationValue, 1)} kWh</div>
                   </div>
@@ -143,6 +145,7 @@ export default async function Page() {
                         (data?.generationValue || 0) -
                         yesterday?.generationValue
                       }
+                      isReverse={true}
                     />
                     <div>{formatNumber(yesterday?.buyValue, 1)} kWh</div>
                   </div>
@@ -233,51 +236,7 @@ export default async function Page() {
             ))}
           </div>
           <div className="p-6 md:p-10 dark:text-white">
-            <TableHeader title="Datum" />
-            {chart?.map((item, key) => (
-              <div
-                key={key}
-                className="grid md:grid-cols-4 py-4 md:py-0 border-b dark:border-gray-800 items-center"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="font-semibold">
-                    {new Intl.DateTimeFormat("cs-CZ", {}).format(
-                      new Date(item.date)
-                    )}
-                  </div>
-                  <div className="h-1 w-1/4 bg-gray-100 dark:bg-gray-800 rounded-full md:hidden">
-                    <div
-                      className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
-                      style={{
-                        width: `${
-                          item.generationValue /
-                          ((item.generationValue + item.buyValue) / 100)
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <TableItem title="Výroba">
-                  {formatNumber(item.generationValue, 1)} kWh
-                </TableItem>
-                <TableItem title="Nákup">
-                  {formatNumber(item.buyValue, 1)} kWh
-                </TableItem>
-                <div className="md:flex justify-end hidden">
-                  <div className="h-1 w-1/4 bg-gray-100 dark:bg-gray-800 rounded-full">
-                    <div
-                      className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
-                      style={{
-                        width: `${
-                          item.generationValue /
-                          ((item.generationValue + item.buyValue) / 100)
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <Days chart={chart} />
           </div>
         </main>
       </div>
