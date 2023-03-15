@@ -7,7 +7,6 @@ import SummaryItem from "../components/summary-item";
 import TableHeader from "../components/table-header";
 import TableItem from "../components/table-item";
 import Title from "../components/title";
-import TrendUp from "../components/trend-up";
 import { datediff } from "../lib/datediff";
 import { fetchForecast } from "../lib/forecast";
 import { formatNumber } from "../lib/formatNumber";
@@ -101,14 +100,7 @@ export default async function Page() {
                 </div>
                 <div className="grid grid-cols-2 text-gray-500">
                   <div>Před 24h</div>
-                  <div className="text-right flex justify-end space-x-2">
-                    <TrendUp
-                      value={
-                        (data?.generationValue || 0) -
-                        yesterday?.generationValue
-                      }
-                      isReverse={false}
-                    />
+                  <div className="text-right">
                     <div>{formatNumber(yesterday?.generationValue, 1)} kWh</div>
                   </div>
                 </div>
@@ -139,14 +131,7 @@ export default async function Page() {
               <div>
                 <div className="grid grid-cols-2 text-gray-500">
                   <div>Před 24h</div>
-                  <div className="text-right flex justify-end space-x-2">
-                    <TrendUp
-                      value={
-                        (data?.generationValue || 0) -
-                        yesterday?.generationValue
-                      }
-                      isReverse={true}
-                    />
+                  <div className="text-right">
                     <div>{formatNumber(yesterday?.buyValue, 1)} kWh</div>
                   </div>
                 </div>
