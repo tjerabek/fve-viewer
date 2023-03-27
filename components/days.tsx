@@ -11,7 +11,7 @@ export default function Days({ chart }) {
     <div className="space-y-4">
       <button
         onClick={() => setOpen(!isOpen)}
-        className="rounded-[5px] text-gray-800 px-8 leading-[20px] border border-gray-200 inline-block h-10 w-full md:w-auto hover:border-gray-800 transition"
+        className="rounded-[5px] text-gray-800 px-8 leading-[20px] border border-gray-200 inline-block h-10 w-full md:w-auto hover:border-gray-800 transition dark:text-white"
       >
         {!isOpen ? `Zobrazit dny` : `Skrýt dny`}
       </button>
