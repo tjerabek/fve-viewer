@@ -59,7 +59,7 @@ export default async function Page() {
       batteryDone.getTime() + batteryPowerSpeed * 60 * 60000
     );
   }
-  const dtf = new Intl.DateTimeFormat("cs-CZ", { timeStyle: "short" });
+  const dtf = new Intl.DateTimeFormat("cs-CZ", { timeStyle: "short", timeZone: 'Europe/Prague' });
   return (
     <>
       <div className="dark:bg-black">
@@ -95,7 +95,7 @@ export default async function Page() {
                     {data?.batteryPower! > 0 && <div>Nabíjení</div>}
                     {data?.batteryPower! < 0 && <div>Vybíjení</div>}
                     <div className="text-right">
-                      <div>{formatNumber(data?.batteryPower)} kWh</div>
+                      <div>{formatNumber(data?.batteryPower)} W</div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 text-gray-500">
