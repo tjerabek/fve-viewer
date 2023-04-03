@@ -34,6 +34,7 @@ const FUEL_PRICE = 40;
 const FUEL_CONSUMPTION = 7;
 const GAS_PRICE = (FUEL_CONSUMPTION / 100) * FUEL_PRICE;
 const BATTERY_CAPACITY = 10000;
+const BATTERY_BACKUP = 2000;
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +60,8 @@ export default async function Page() {
     }
     if (data?.batteryPower! < 0) {
       batteryPowerSpeed = Math.abs(
-        (BATTERY_CAPACITY * (data?.batterySoc! / 100)) / data?.batteryPower!
+        (BATTERY_CAPACITY * (data?.batterySoc! / 100) - BATTERY_BACKUP) /
+          data?.batteryPower!
       );
     }
     batteryDone = new Date(
