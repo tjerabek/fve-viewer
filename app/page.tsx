@@ -72,7 +72,7 @@ export default async function Page() {
                 </div>
                 <IconBattery value={data?.batterySoc} />
               </div>
-              <div className="text-gray-500">Baterie</div>
+              <div className="text-gray-500">Baterie ({formatNumber(data?.batteryPower)} W)</div>
             </div>
             <div className="space-y-2">
               <SummaryItem title="Dnes vyrobeno">

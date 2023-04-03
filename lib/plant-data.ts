@@ -9,6 +9,7 @@ export type OverviewData = {
   generationValue?: number;
   generationTotal?: number;
   buyValue?: number;
+  batteryPower?: number;
   date?: Date;
 };
 
