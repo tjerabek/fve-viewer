@@ -51,15 +51,25 @@ export default async function Page() {
   let batteryDone = new Date();
 
   if (data?.batteryPower !== 0) {
-    batteryPowerSpeed = Math.abs(
-      (BATTERY_CAPACITY - BATTERY_CAPACITY * (data?.batterySoc! / 100)) /
-        data?.batteryPower!
-    );
+    if (data?.batteryPower! > 0) {
+      batteryPowerSpeed = Math.abs(
+        (BATTERY_CAPACITY - BATTERY_CAPACITY * (data?.batterySoc! / 100)) /
+          data?.batteryPower!
+      );
+    }
+    if (data?.batteryPower! < 0) {
+      batteryPowerSpeed = Math.abs(
+        (BATTERY_CAPACITY * (data?.batterySoc! / 100)) / data?.batteryPower!
+      );
+    }
     batteryDone = new Date(
       batteryDone.getTime() + batteryPowerSpeed * 60 * 60000
     );
   }
-  const dtf = new Intl.DateTimeFormat("cs-CZ", { timeStyle: "short", timeZone: 'Europe/Prague' });
+  const dtf = new Intl.DateTimeFormat("cs-CZ", {
+    timeStyle: "short",
+    timeZone: "Europe/Prague",
+  });
   return (
     <>
       <div className="dark:bg-black">
