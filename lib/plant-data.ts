@@ -23,7 +23,7 @@ export async function fetchOverview(): Promise<OverviewData> {
   const filteredKeys = [
     "generationPower",
     "usePower",
-    "buyPower",
+    "wirePower", // buyPower
     "batterySoc",
     "generationValue",
     "generationTotal",
@@ -32,7 +32,7 @@ export async function fetchOverview(): Promise<OverviewData> {
   ];
 
   return fetch(
-    "https://home.solarmanpv.com/maintain-s/operating/station/information/3084557?language=cs",
+    "https://home.solarmanpv.com/maintain-s/operating/system/3084557",
     {
       method: "GET",
       headers,
@@ -40,6 +40,11 @@ export async function fetchOverview(): Promise<OverviewData> {
   )
     .then(parseJSON)
     .then((result) => filterKeys(result, filteredKeys))
+    .then((result) => {
+      result['buyPower'] = result['wirePower'];
+      delete result['wirePower'];
+      return result;
+    })
     .then((result) => ({
       ...result,
     }));
