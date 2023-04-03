@@ -28,6 +28,7 @@ export async function fetchOverview(): Promise<OverviewData> {
     "generationValue",
     "generationTotal",
     "buyValue",
+    "batteryPower",
   ];
 
   return fetch(
