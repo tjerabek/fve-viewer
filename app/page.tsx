@@ -32,7 +32,8 @@ const CAR_BATTERY_SIZE = 78;
 const PRICE = 6;
 const FUEL_PRICE = 40;
 const FUEL_CONSUMPTION = 7;
-const GAS_PRICE = FUEL_CONSUMPTION / 100 * FUEL_PRICE;
+const GAS_PRICE = (FUEL_CONSUMPTION / 100) * FUEL_PRICE;
+const BATTERY_CAPACITY = 10000;
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,19 @@ export default async function Page() {
   ]);
   const reverseChart = chart.slice().reverse();
 
+  let batteryPowerSpeed = 0;
+  let batteryDone = new Date();
+
+  if (data?.batteryPower !== 0) {
+    batteryPowerSpeed = Math.abs(
+      (BATTERY_CAPACITY - BATTERY_CAPACITY * (data?.batterySoc! / 100)) /
+        data?.batteryPower!
+    );
+    batteryDone = new Date(
+      batteryDone.getTime() + batteryPowerSpeed * 60 * 60000
+    );
+  }
+  const dtf = new Intl.DateTimeFormat("cs-CZ", { timeStyle: "short" });
   return (
     <>
       <div className="dark:bg-black">
@@ -65,14 +79,33 @@ export default async function Page() {
             <SummaryItem title="Síť">
               {formatNumber(Math.abs(data?.buyPower || 0))} W
             </SummaryItem>
-            <div>
-              <div className="flex space-x-2">
-                <div className="text-xl dark:text-white">
-                  {formatNumber(data?.batterySoc)} %
+            <div className="space-y-2">
+              <div>
+                <div className="flex space-x-2">
+                  <div className="text-xl dark:text-white">
+                    {formatNumber(data?.batterySoc)} %
+                  </div>
+                  <IconBattery value={data?.batterySoc} />
                 </div>
-                <IconBattery value={data?.batterySoc} />
+                <div className="text-gray-500">Baterie</div>
               </div>
-              <div className="text-gray-500">Baterie ({formatNumber(data?.batteryPower)} W)</div>
+              {data?.batteryPower !== 0 && (
+                <div>
+                  <div className="grid grid-cols-2 text-gray-500">
+                    {data?.batteryPower! > 0 && <div>Nabíjení</div>}
+                    {data?.batteryPower! < 0 && <div>Vybíjení</div>}
+                    <div className="text-right">
+                      <div>{formatNumber(data?.batteryPower)} kWh</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 text-gray-500">
+                    <div>Hotovo</div>
+                    <div className="text-right">
+                      <div>{dtf.format(batteryDone)}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="space-y-2">
               <SummaryItem title="Dnes vyrobeno">
@@ -171,9 +204,11 @@ export default async function Page() {
                   <div>Ušetřeno za palivo</div>
                   <div className="text-right">
                     {formatNumber(
-                      ((data?.generationTotal || 0) / CAR_CONSUMPTION) * GAS_PRICE,
+                      ((data?.generationTotal || 0) / CAR_CONSUMPTION) *
+                        GAS_PRICE,
                       0
-                    )}{" "}Kč
+                    )}{" "}
+                    Kč
                   </div>
                 </div>
               </div>
