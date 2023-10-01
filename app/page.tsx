@@ -29,7 +29,7 @@ LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
 
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
-const PRICE = 6;
+const PRICE = 3.7;
 const FUEL_PRICE = 40;
 const FUEL_CONSUMPTION = 7;
 const GAS_PRICE = (FUEL_CONSUMPTION / 100) * FUEL_PRICE;
