@@ -27,6 +27,8 @@ const LAST_MONTH = new Date();
 LAST_MONTH.setDate(1);
 LAST_MONTH.setMonth(CURRENT_MONTH.getMonth() - 1);
 
+/* Calculation settings */
+
 const CAR_CONSUMPTION = 0.2;
 const CAR_BATTERY_SIZE = 78;
 const PRICE = 3.7;
