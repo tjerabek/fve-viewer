@@ -2,10 +2,11 @@ import { supabase } from "./db";
 import { OverviewData } from "./plant-data";
 
 export async function fetchDbOverview(): Promise<OverviewData> {
+  const today = new Date().toISOString().split("T")[0];
   const { data } = await supabase
     .from("overview")
     .select("*")
-    .eq("date", new Date().toISOString())
+    .gte("date", today)
     .order("id", { ascending: false })
     .limit(1)
     .single();
@@ -30,10 +31,11 @@ export async function fetchDbYear(): Promise<Array<any>> {
 }
 
 export async function fetchDbToday(): Promise<Array<any>> {
+  const today = new Date().toISOString().split("T")[0];
   const { data, error } = await supabase
     .from("overview")
     .select("*")
-    .eq("date", new Date().toISOString())
+    .gte("date", today)
     .order("id", { ascending: true });
   return data || [];
 }
