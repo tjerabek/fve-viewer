@@ -18,6 +18,7 @@ import { fetchChart } from "../../../lib/plant-data";
  */
 export default async function handler(req, res) {
   const dry = req.query.dry === "true";
+  const debug = req.query.debug === "true";
 
   const endDate = req.query.endDate
     ? new Date(req.query.endDate as string)
@@ -102,11 +103,15 @@ export default async function handler(req, res) {
       continue;
     }
 
+    if (debug) {
+      return res.status(200).json({ sample: records.slice(0, 3) });
+    }
+
     // Build a lookup: "2024-01-15" → record
     const byDay = new Map<string, any>();
     for (const r of records) {
       // Solarman returns dates in various formats; normalise to YYYY-MM-DD.
-      const key = normaliseDate(r.date ?? r.day ?? r.time);
+      const key = normaliseDate(r.date ?? r.day ?? r.time ?? r.collectTime ?? r.statisticsTime);
       if (key) byDay.set(key, r);
     }
 
