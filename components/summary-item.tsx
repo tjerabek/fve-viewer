@@ -1,5 +1,3 @@
-"use client";
-
 type SummaryItemType = {
   children?: React.ReactNode;
   title: string;

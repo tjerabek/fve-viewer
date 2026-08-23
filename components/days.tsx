@@ -33,10 +33,7 @@ export default function Days({ chart }) {
                   <div
                     className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
                     style={{
-                      width: `${
-                        item.generationValue /
-                        ((item.generationValue + item.buyValue) / 100)
-                      }%`,
+                      width: `${Math.min(100, Math.max(0, item.generationValue / ((item.generationValue + item.buyValue) / 100) || 0))}%`,
                     }}
                   ></div>
                 </div>
@@ -52,10 +49,7 @@ export default function Days({ chart }) {
                   <div
                     className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
                     style={{
-                      width: `${
-                        item.generationValue /
-                        ((item.generationValue + item.buyValue) / 100)
-                      }%`,
+                      width: `${Math.min(100, Math.max(0, item.generationValue / ((item.generationValue + item.buyValue) / 100) || 0))}%`,
                     }}
                   ></div>
                 </div>

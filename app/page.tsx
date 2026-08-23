@@ -51,17 +51,17 @@ export default async function Page() {
   let batteryPowerSpeed = 0;
   let batteryDone = new Date();
 
-  if (data?.batteryPower !== 0) {
-    if (data?.batteryPower! > 0) {
+  if (data?.batteryPower) {
+    if (data.batteryPower > 0) {
       batteryPowerSpeed = Math.abs(
-        (BATTERY_CAPACITY - BATTERY_CAPACITY * (data?.batterySoc! / 100)) /
-          data?.batteryPower!
+        (BATTERY_CAPACITY - BATTERY_CAPACITY * ((data.batterySoc ?? 0) / 100)) /
+          data.batteryPower
       );
     }
-    if (data?.batteryPower! < 0) {
+    if (data.batteryPower < 0) {
       batteryPowerSpeed = Math.abs(
-        (BATTERY_CAPACITY * (data?.batterySoc! / 100) - BATTERY_BACKUP) /
-          data?.batteryPower!
+        (BATTERY_CAPACITY * ((data.batterySoc ?? 0) / 100) - BATTERY_BACKUP) /
+          data.batteryPower
       );
     }
     batteryDone = new Date(
@@ -249,10 +249,7 @@ export default async function Page() {
                     <div
                       className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
                       style={{
-                        width: `${
-                          item.generationValue /
-                          ((item.generationValue + item.buyValue) / 100)
-                        }%`,
+                        width: `${Math.min(100, Math.max(0, item.generationValue / ((item.generationValue + item.buyValue) / 100) || 0))}%`,
                       }}
                     ></div>
                   </div>
@@ -268,10 +265,7 @@ export default async function Page() {
                     <div
                       className="h-full bg-gray-500 dark:bg-gray-500 rounded-full"
                       style={{
-                        width: `${
-                          item.generationValue /
-                          ((item.generationValue + item.buyValue) / 100)
-                        }%`,
+                        width: `${Math.min(100, Math.max(0, item.generationValue / ((item.generationValue + item.buyValue) / 100) || 0))}%`,
                       }}
                     ></div>
                   </div>

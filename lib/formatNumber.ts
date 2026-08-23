@@ -1,5 +1,5 @@
 export function formatNumber(number?: number, digits?: number) {
-  if (!number) {
+  if (number == null) {
     return number;
   }
   return number.toLocaleString("cs-CZ", {
