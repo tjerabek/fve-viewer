@@ -80,7 +80,7 @@ export default async function handler(req, res) {
   const inserted: string[] = [];
   const failed: string[] = [];
 
-  for (const [monthKey, days] of byMonth) {
+  for (const [monthKey, days] of Array.from(byMonth.entries())) {
     const [year, month] = monthKey.split("-").map(Number);
     let records: any[];
     try {
