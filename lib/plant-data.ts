@@ -85,3 +85,17 @@ export async function fetchYear(year) {
     .then(parseJSON)
     .then((result) => result?.records);
 }
+
+// Returns hourly records for a specific day. The endpoint shape mirrors
+// stats/month but with day-level granularity — unverified, may need adjustment.
+export async function fetchDay(year: number, month: number, day: number) {
+  return fetch(
+    `https://home.solarmanpv.com/maintain-s/history/batteryPower/3084557/stats/day?year=${year}&month=${month}&day=${day}`,
+    {
+      method: "GET",
+      headers,
+    }
+  )
+    .then(parseJSON)
+    .then((result) => result?.records);
+}
