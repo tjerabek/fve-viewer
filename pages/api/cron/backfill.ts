@@ -2,18 +2,19 @@ import { supabase } from "../../../lib/db";
 import { fetchChart } from "../../../lib/plant-data";
 
 /**
- * Backfill missing days in the overview table using Solarman monthly stats.
+ * Backfill missing or incomplete days using Solarman monthly stats.
+ *
+ * A day is considered a gap when view_days has no record for it, OR when
+ * its generationValue is 0/null (cron ran briefly but missed peak production).
  *
  * Usage:
  *   GET /api/cron/backfill?startDate=2024-01-01&endDate=2024-03-31
  *   GET /api/cron/backfill               (defaults: last 90 days)
  *   GET /api/cron/backfill?dry=true      (report gaps without inserting)
  *
- * Only inserts ONE synthetic record per missing day containing daily totals
- * (generationValue, buyValue). Live power readings are left null so they
- * don't skew real-time stats.
- *
- * Safe to run repeatedly — existing days are never touched.
+ * Inserts ONE record per gap day with daily totals from Solarman
+ * (generationValue, buyValue). Live power readings are left null.
+ * Safe to run repeatedly — today is never touched.
  */
 export default async function handler(req, res) {
   const dry = req.query.dry === "true";
@@ -33,29 +34,35 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid date range" });
   }
 
-  // 1. Collect all dates that already have at least one record in overview.
+  // 1. Query view_days — a day is covered only if it has a positive generationValue.
+  //    Days where the cron ran briefly but captured 0 kWh are treated as gaps.
+  const startStr = startDate.toISOString().split("T")[0];
+  const endStr = endDate.toISOString().split("T")[0];
+
   const { data: existing, error: existingError } = await supabase
-    .from("overview")
-    .select("date")
-    .gte("date", startDate.toISOString().split("T")[0])
-    .lte("date", endDate.toISOString().split("T")[0]);
+    .from("view_days")
+    .select("date, generationValue")
+    .gte("date", startStr)
+    .lte("date", endStr);
 
   if (existingError) {
     return res.status(500).json({ error: existingError.message });
   }
 
-  const existingDays = new Set(
-    (existing || []).map((r) => r.date?.split("T")[0])
+  const coveredDays = new Set(
+    (existing || [])
+      .filter((r) => (r.generationValue ?? 0) > 0)
+      .map((r) => (r.date ?? "").split("T")[0])
   );
 
-  // 2. Find all calendar days in [startDate, endDate] that are missing.
+  // 2. Find all calendar days in [startDate, endDate] that need backfill.
   const missingDays: string[] = [];
   const cursor = new Date(startDate);
-  // Don't try to backfill today — cron is already handling it.
+  // Never touch today — the cron is actively writing it.
   const todayStr = new Date().toISOString().split("T")[0];
   while (cursor < endDate) {
     const dayStr = cursor.toISOString().split("T")[0];
-    if (dayStr !== todayStr && !existingDays.has(dayStr)) {
+    if (dayStr !== todayStr && !coveredDays.has(dayStr)) {
       missingDays.push(dayStr);
     }
     cursor.setDate(cursor.getDate() + 1);
