@@ -86,20 +86,20 @@ export default async function handler(req, res) {
   }
 
   const inserted: string[] = [];
-  const failed: string[] = [];
+  const failed: { day: string; reason: string }[] = [];
 
   for (const [monthKey, days] of Array.from(byMonth.entries())) {
     const [year, month] = monthKey.split("-").map(Number);
     let records: any[];
     try {
       records = await fetchChart(year, month, false);
-    } catch {
-      failed.push(...days);
+    } catch (e: any) {
+      days.forEach((d) => failed.push({ day: d, reason: `fetch error: ${e?.message}` }));
       continue;
     }
 
     if (!Array.isArray(records)) {
-      failed.push(...days);
+      days.forEach((d) => failed.push({ day: d, reason: `unexpected records type: ${JSON.stringify(records)}` }));
       continue;
     }
 
@@ -107,19 +107,21 @@ export default async function handler(req, res) {
       return res.status(200).json({ sample: records.slice(0, 3) });
     }
 
-    // Build a lookup: "2024-01-15" → record
+    // Build a lookup: "2026-08-22" → record.
+    // Solarman monthly records use separate year/month/day integer fields.
     const byDay = new Map<string, any>();
     for (const r of records) {
-      // Solarman returns dates in various formats; normalise to YYYY-MM-DD.
-      const key = normaliseDate(r.date ?? r.day ?? r.time ?? r.collectTime ?? r.statisticsTime);
+      const key =
+        r.year && r.month && r.day
+          ? `${r.year}-${String(r.month).padStart(2, "0")}-${String(r.day).padStart(2, "0")}`
+          : normaliseDate(r.date ?? r.acceptDay ?? r.time);
       if (key) byDay.set(key, r);
     }
 
     for (const dayStr of days) {
       const solarmanRecord = byDay.get(dayStr);
       if (!solarmanRecord) {
-        // Solarman has no data for this day either — truly missing.
-        failed.push(dayStr);
+        failed.push({ day: dayStr, reason: `not in Solarman response (keys: ${Array.from(byDay.keys()).join(", ")})` });
         continue;
       }
 
@@ -132,7 +134,7 @@ export default async function handler(req, res) {
       });
 
       if (error) {
-        failed.push(dayStr);
+        failed.push({ day: dayStr, reason: `db insert: ${error.message}` });
       } else {
         inserted.push(dayStr);
       }
@@ -142,13 +144,13 @@ export default async function handler(req, res) {
   return res.status(200).json({ inserted, failed, total: missingDays.length });
 }
 
-function normaliseDate(raw: string | undefined | null): string | null {
-  if (!raw) return null;
-  // Accept "2024-01-15", "2024-01-15T..." or epoch millis as string
-  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
-  const n = Number(raw);
-  if (!isNaN(n) && n > 1_000_000_000) {
-    return new Date(n).toISOString().split("T")[0];
-  }
+function normaliseDate(raw: string | number | undefined | null): string | null {
+  if (raw == null) return null;
+  const s = String(raw);
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  // "20260801" → "2026-08-01"
+  if (/^\d{8}$/.test(s)) return `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`;
+  const n = Number(s);
+  if (!isNaN(n) && n > 1_000_000_000) return new Date(n).toISOString().split("T")[0];
   return null;
 }
